@@ -74,9 +74,9 @@
 
 #define XCOVER_VER_MAJOR        0
 #define XCOVER_VER_MINOR        3
-#define XCOVER_VER_REVISION     3
+#define XCOVER_VER_REVISION     4
 
-#define XCOVER_VER              0x000303ff
+#define XCOVER_VER              0x000304ff
 
 /* /////////////////////////////////////////////////////////////////////////
  * includes - 1
