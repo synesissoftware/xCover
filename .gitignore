@@ -1,28 +1,54 @@
-# Compiled Object files
-*.slo
-*.lo
+
+# directories (by name)
+
+_internal/
+
+bin/
+lib/
+
+include/shwild/
+include/xcontract/
+include/xtests/
+
+src/shwild/
+src/xcontract/
+src/xtests/
+
+Debug/
+DebugMt/
+DebugDll/
+Release/
+ReleaseMt/
+ReleaseDll/
+
+x64/
+Win32/
+
+# directories (by pattern)
+
+# files (by name)
+
+# files (by pattern)
+
+*~
+*.a
+*.app
+*.dll
+*.dylib
+*.exe
+*.gch
+*.lib
+*.ncb
 *.o
 *.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
+*.opensdf
+*.opt
 *.out
-*.app
+*.pch
+*.scc
+*.sbr
+*.sdf
+*.so
+*.suo
+*.vcproj.user
+*.vcxproj.user
