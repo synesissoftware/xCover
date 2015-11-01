@@ -1,0 +1,22 @@
+============================================================================
+xCover - FAQ
+===============
+
+Updated:    3rd January 2009
+
+
+
+The FAQ list is under (constant) development. If you post a question on the
+Tutorials forum (https://sourceforge.net/forum/forum.php?forum_id=903712)
+it will be used to create one.
+
+FAQs:
+=====
+
+Q1: "What happens if the I ask a question on the forum?"   [3rd January 2009]
+
+A1:
+  It'll be added to the FAQ.
+
+
+=============================== End of file ================================

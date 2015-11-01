@@ -1,0 +1,51 @@
+============================================================================
+xCover - History
+===================
+
+Updated:    4th April 2010
+
+
+4th April 2010 - 0.2.7
+----------------------
+
+ * better discrimination of compiler support for __FUNCTION__ and __COUNTER__
+
+
+4th February 2010 - 0.2.6
+-------------------------
+
+ * fixed namespace defect
+ * fixed makefile setting defect
+
+
+19th January 2010 - 0.2.5
+-------------------------
+
+ * minor documentation enhancements
+ * fixed up UNIXem multithreaded pre-processor definitions
+ * minor type defects in internal plumbing code
+
+
+12th August 2009 - 0.2.3
+------------------------
+
+ * tidied up distribution
+
+
+8th February 2009 - 0.2.2
+-------------------------
+
+ * added functions for translating api return codes into strings
+ * added string access shims for API return code type
+ * added example corresponding to code in the article in the March 09 instalment of ACCU's C Vu journal
+
+
+3rd January 2009 - 0.2.1
+------------------------
+
+ This is the first released version.
+
+ All history before this day is moot!
+
+
+=============================== End of file ================================

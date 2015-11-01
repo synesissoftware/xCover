@@ -1,0 +1,284 @@
+============================================================================
+xCover - Changes
+===================
+
+Updated:    4th April 2010
+
+
+    ************************************
+    * Change key:                      *
+    *                                  *
+    *  ~  means something has changed  *
+    *  +  means a new addition         *
+    *  -  means removal of something   *
+    *  *  means a general bullet-point *
+    *                                  *
+    ************************************
+
+
+4th April 2010 - 0.2.7
+======================
+
+Summary:
+--------
+
+ * better discrimination of compiler support for __FUNCTION__ and __COUNTER__
+
+Details:
+--------
+
+General:
+
+ ~ include/xcover/xcover.h:
+    ~ better discrimination of compiler support for __FUNCTION__ and __COUNTER__
+
+Core:
+
+Distribution:
+
+Makefiles / Project-files:
+
+Examples:
+
+Test:
+
+Test.Unit:
+
+Test.Component:
+
+Test.Scratch:
+
+Depends on:
+
+ * STLSoft 1.9.97 or later
+   (http://stlsoft.org/)
+
+
+
+4th February 2010 - 0.2.6
+=========================
+
+Summary:
+--------
+
+ * fixed namespace defect
+ * fixed makefile setting defect
+
+Details:
+--------
+
+General:
+
+ ~ include/xcover/xcover.h:
+    ~ fixed namespace defect
+
+Core:
+
+Distribution:
+
+Makefiles / Project-files:
+
+ ~ build/vc71/makefile:
+ ~ build/vc8.x64/makefile:
+ ~ build/vc8/makefile:
+ ~ build/vc9.x64/makefile:
+ ~ build/vc9/makefile:
+    - removal of -O2 (optimise for speed) flag from DLL Debug configuration
+
+Examples:
+
+Test:
+
+Test.Unit:
+
+Test.Component:
+
+Test.Scratch:
+
+Depends on:
+
+ * STLSoft 1.9.91 or later
+   (http://stlsoft.org/)
+
+
+
+19th January 2010 - 0.2.5
+=========================
+
+Summary:
+--------
+
+ * minor documentation enhancements
+ * fixed up UNIXem multithreaded pre-processor definitions
+ * minor type defects in internal plumbing code
+
+Details:
+--------
+
+General:
+
+Core:
+
+ ~ include/xcover/xcover.h:
+    + added xcover_SchwarzFileGroupAssociator
+    ~ corrected type defect in xcover_SchwarzMarker
+    ~ minor documentation enhancements
+
+ ~ src/xcover.core.cpp:
+    ~ UNIXem compatibility
+    ~ VC 7.1 warnings
+    ~ 64-bit compatibility
+
+Distribution:
+
+ + now includes .sln/.vcproj files
+
+Makefiles / Project-files:
+
+ ~ build/vc8.unixem/makefile:
+ ~ build/vc9.unixem/makefile:
+    ~ added missing -D_REENTRANT for mt UNIXem
+
+Examples:
+
+Test:
+
+Test.Unit:
+
+Test.Component:
+
+ + test.component.cpp.1
+
+Test.Scratch:
+
+Depends on:
+
+ * STLSoft 1.9.87 or later
+   (http://stlsoft.org/)
+
+
+
+12th August 2009 - 0.2.3
+========================
+
+Summary:
+--------
+
+ * tidied up distribution
+
+Details:
+--------
+
+General:
+
+Core:
+
+Distribution:
+
+ + now includes .sln/.vcproj files
+
+Makefiles / Project-files:
+
+Examples:
+
+Test:
+
+Test.Unit:
+
+Test.Component:
+
+ + test.component.cpp.1
+
+Test.Scratch:
+
+Depends on:
+
+ * STLSoft 1.9.87 or later
+   (http://stlsoft.org/)
+
+
+
+8th February 2009 - 0.2.2
+=========================
+
+Summary:
+--------
+
+ * added functions for translating api return codes into strings
+ * added string access shims for API return code type
+ * added example corresponding to code in the article in the March 09 instalment of ACCU's C Vu journal
+
+Details:
+--------
+
+General:
+
+Core:
+
+ ~ include/xcover/xcover.h:
+ ~ src/xcover.core.cpp:
+    + added xcover_getApiCodeString() and xcover_getApiCodeStringLength()
+    + added string access shims for xcover_rc_t
+
+Distribution:
+
+Makefiles / Project-files:
+
+Examples:
+
+ + cvu.ex.1 example, from the March issue of C Vu (http://accu.org/)
+
+Test:
+
+Test.Unit:
+
+Test.Component:
+
+ + test.component.cpp.1
+
+Test.Scratch:
+
+Depends on:
+
+ * STLSoft 1.9.73 or later
+   (http://stlsoft.org/)
+
+
+
+3rd January 2009 - 0.2.1
+========================
+
+Summary:
+--------
+
+ * First public release
+
+Details:
+--------
+
+General:
+
+Core:
+
+Distribution:
+
+Makefiles / Project-files:
+
+Examples:
+
+Test:
+
+Test.Unit:
+
+Test.Component:
+
+Test.Scratch:
+
+Depends on:
+
+ * STLSoft 1.9.65 or later
+   (http://stlsoft.org/)
+
+
+
+=============================== End of file ================================

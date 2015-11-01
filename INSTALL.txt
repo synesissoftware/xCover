@@ -1,0 +1,16 @@
+============================================================================
+xCover - Install
+===================
+
+Updated:    4th April 2010
+
+
+
+xCover requires manual installation, by copying files after building,
+as described in the accompanying doc/html/0.2.7/index.html file.
+
+
+NOTE: xCover depends on the (header-only) STLSoft libraries - version
+  1.9.97 or later - available from http://stlsoft.org/.
+
+=============================== End of file ================================
