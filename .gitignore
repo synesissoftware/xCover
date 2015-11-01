@@ -19,9 +19,13 @@ src/xtests/
 Debug/
 DebugMt/
 DebugDll/
+Debug Multithreaded/
+Debug Multithreaded DLL/
 Release/
 ReleaseMt/
 ReleaseDll/
+Release Multithreaded/
+Release Multithreaded DLL/
 
 x64/
 Win32/
