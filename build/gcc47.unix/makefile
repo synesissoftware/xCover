@@ -1,7 +1,7 @@
 ############################################################################
 # File:     makefile
 #
-# Purpose:  Makefile for the xCover:C project, for the GCC 4.3
+# Purpose:  Makefile for the xCover:C project, for the GCC 4.7 (UNIX)
 #           compiler, on UNIX
 #
 # Created:  28th December 2008
@@ -24,7 +24,7 @@ endif # !STLSOFT
 ########################################
 # Project & compiler version
 
-COMP_TAG			=	gcc43
+COMP_TAG			=	gcc47
 ARCH_TAG            =   
 OS_TAG				=   
 PROJ_TAG			=	xcover

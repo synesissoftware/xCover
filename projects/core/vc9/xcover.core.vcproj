@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug Multithreaded DLL|Win32"
-			OutputDirectory="../../../bin"
-			IntermediateDirectory="DebugDLL"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="2"
 			>
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="../../../lib/xcover.0.core.vc8.dll.debug.lib"
+				OutputFile="../../../lib/xcover.0.core.vc9.dll.debug.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -82,8 +82,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release Multithreaded DLL|Win32"
-			OutputDirectory="../../../bin"
-			IntermediateDirectory="ReleaseDLL"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
@@ -124,7 +124,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="../../../lib/xcover.0.core.vc8.dll.lib"
+				OutputFile="../../../lib/xcover.0.core.vc9.dll.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -144,8 +144,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug Multithreaded|Win32"
-			OutputDirectory="../../../bin"
-			IntermediateDirectory="DebugMT"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="2"
 			>
@@ -188,7 +188,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="../../../lib/xcover.0.core.vc8.mt.debug.lib"
+				OutputFile="../../../lib/xcover.0.core.vc9.mt.debug.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -208,8 +208,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release Multithreaded|Win32"
-			OutputDirectory="../../../bin"
-			IntermediateDirectory="ReleaseMT"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
@@ -250,7 +250,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="../../../lib/xcover.0.core.vc8.mt.lib"
+				OutputFile="../../../lib/xcover.0.core.vc9.mt.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -270,8 +270,8 @@
 		</Configuration>
 		<Configuration
 			Name="Unicode Debug Multithreaded|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -314,7 +314,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="../../../lib/xcover.0.core.vc8.unicode.mt.debug.lib"
+				OutputFile="../../../lib/xcover.0.core.vc9.unicode.mt.debug.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

@@ -2,11 +2,13 @@
 xCover - News
 ================
 
-Updated:    4th April 2010
+Updated:    1st November 2015
 
 
 
 News:
+
+  1st November 2015     -   xCover 0.3.3 released
 
   4th April 2010        -   xCover 0.2.7 released
 

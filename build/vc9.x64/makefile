@@ -5,7 +5,7 @@
 #           compiler, on Win64
 #
 # Created:  28th December 2008
-# Updated:  1st February 2010
+# Updated:  1st November 2015
 #
 ############################################################################
 
@@ -30,6 +30,7 @@ OS_TAG				=
 PROJ_TAG			=	xcover
 PROJ_VER_MAJOR		=   0
 PROJ_TAG_VER		=   $(PROJ_TAG).$(PROJ_VER_MAJOR)
+COMP_ARCH_OS_TAG	=	$(COMP_TAG)$(OS_TAG)$(ARCH_TAG)
 
 SHWILD_VER_MAJOR	=	0
 SHWILD_TAG_VER		=	shwild.$(SHWILD_VER_MAJOR)
@@ -538,22 +539,22 @@ XTESTS_HEADERS=\
 # Libraries
 
 # xCover
-LIB_CORE_MT_D				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.debug.lib
-LIB_CORE_DLL_D				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).dll.debug.lib
-LIB_CORE_DLL_R				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).dll.lib
-LIB_CORE_MT_R				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.lib
+LIB_CORE_MT_D				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_ARCH_OS_TAG).mt.debug.lib
+LIB_CORE_DLL_D				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_ARCH_OS_TAG).dll.debug.lib
+LIB_CORE_DLL_R				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_ARCH_OS_TAG).dll.lib
+LIB_CORE_MT_R				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_ARCH_OS_TAG).mt.lib
 
 # shwild - testing only
-LIB_SHWILD_MT_D			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.debug.lib
-LIB_SHWILD_DLL_D			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).dll.debug.lib
-LIB_SHWILD_DLL_R			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).dll.lib
-LIB_SHWILD_MT_R			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.lib
+LIB_SHWILD_MT_D			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).mt.debug.lib
+LIB_SHWILD_DLL_D			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).dll.debug.lib
+LIB_SHWILD_DLL_R			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).dll.lib
+LIB_SHWILD_MT_R			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).mt.lib
 
 # xtests - unit/component testing only
-LIB_XTESTS_MT_D			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.debug.lib
-LIB_XTESTS_DLL_D			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).dll.debug.lib
-LIB_XTESTS_DLL_R			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).dll.lib
-LIB_XTESTS_MT_R			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.lib
+LIB_XTESTS_MT_D			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).mt.debug.lib
+LIB_XTESTS_DLL_D			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).dll.debug.lib
+LIB_XTESTS_DLL_R			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).dll.lib
+LIB_XTESTS_MT_R			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).mt.lib
 
 ########################################
 # Examples

@@ -5,11 +5,11 @@
  *              library.
  *
  * Created:     1st March 2008
- * Updated:     19th January 2010
+ * Updated:     8th October 2015
  *
  * Home:        http://xcover.org/
  *
- * Copyright (c) 2008-2010, Matthew Wilson and Synesis Software
+ * Copyright (c) 2008-2015, Matthew Wilson and Synesis Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,8 +73,9 @@
 #else /* ? XCOVER_USE_SHWILD */
 # include <platformstl/platformstl.h>
 # if defined(PLATFORMSTL_OS_IS_UNIX) && \
-		 !defined(_WIN32)
-# define XCOVER_USE_FNMATCH_
+         !defined(_WIN32)
+#  include <fnmatch.h>
+#  define XCOVER_USE_FNMATCH_
 # elif defined(PLATFORMSTL_OS_IS_WINDOWS) || \
        (   defined(PLATFORMSTL_OS_IS_UNIX) && \
            defined(_WIN32))
@@ -92,8 +93,15 @@
 #include <stlsoft/synch/lock_scope.hpp>
 #include <platformstl/platformstl.h>
 #include <platformstl/filesystem/filesystem_traits.hpp>
+#include <platformstl/synch/atomic_types.h>
+#include <platformstl/synch/util/features.h>
 #include <platformstl/synch/spin_mutex.hpp>
-#include <platformstl/synch/thread_mutex.hpp>
+#if defined(PLATFORMSTL_OS_IS_UNIX) && \
+    !defined(UNIXSTL_USING_PTHREADS)
+# include <stlsoft/synch/null_mutex.hpp>
+#else
+# include <platformstl/synch/thread_mutex.hpp>
+#endif
 
 #include <map>
 #include <string>
@@ -195,22 +203,29 @@ namespace
         {}
 
     public: /// Operations
-        void markStart(int line, int counter)
+        void markStart(int line, int counter, int countForward)
         {
             start.line      =   line;
-            start.counter   =   counter;
+            start.counter   =   counter + countForward;
         }
 
-        void markEnd(int line, int counter)
+        void markEnd(int line, int counter, int countBackward)
         {
-            end.line    =   line;
-            end.counter =   counter;
-
-            if(int(marks.size()) <= counter)
+            if(0 != countBackward)
             {
-                xCover_Mark_t exemplar(-1, 0);
+                markEnd(line, counter - countBackward, 0);
+            }
+            else
+            {
+                end.line    =   line;
+                end.counter =   counter;
 
-                marks.resize(1 + counter, exemplar);
+                if(int(marks.size()) <= counter)
+                {
+                    xCover_Mark_t exemplar(-1, 0);
+
+                    marks.resize(1 + counter, exemplar);
+                }
             }
         }
 
@@ -220,7 +235,7 @@ namespace
 
             size_t counter = static_cast<size_t>(counter_);
 
-            if(int(marks.size()) <= counter)
+            if(marks.size() <= counter)
             {
                 xCover_Mark_t exemplar(-1, 0);
 
@@ -360,8 +375,8 @@ namespace
 
         xcover_rc_t createFileAlias(string_t const& fileName, int line, string_t const& aliasName);
 
-        xcover_rc_t markFileStart(string_t const& fileName, int line, char const* function, int counter);
-        xcover_rc_t markFileEnd(string_t const& fileName, int line, char const* function, int counter);
+        xcover_rc_t markFileStart(string_t const& fileName, int line, char const* function, int counter, int countForward);
+        xcover_rc_t markFileEnd(string_t const& fileName, int line, char const* function, int counter, int countBackward);
         xcover_rc_t markLine(string_t const& fileName, char const* function, int counter, int line);
 
         xcover_rc_t startGroupCoverage(string_t const& fileName, int line, string_t const& groupName);
@@ -377,7 +392,12 @@ namespace
         typedef std::map<string_t, File_ptr_t, file_compare_t>  files_type_;
         typedef std::map<string_t, string_t>                    aliases_type_;
         typedef std::map<string_t, xCover_Group_t>              groups_type_;
+#if defined(PLATFORMSTL_OS_IS_UNIX) && \
+    !defined(UNIXSTL_USING_PTHREADS)
+        typedef stlsoft::null_mutex                             mutex_type_;
+#else
         typedef platformstl::thread_mutex                       mutex_type_;
+#endif
 
         mutex_type_     m_mutex;
         files_type_     m_files;
@@ -428,12 +448,12 @@ namespace
 
             return fileReporterBytes[index];
         }
-    }                       s_fileReporterBytes;
-
-    xCover_Context_t*       s_ctxt;
-    xCover_FILE_reporter_t* s_defaultReporter;
-    stlsoft::ss_sint_t      s_mx;
-    int                     s_apiInit;
+    }                         s_fileReporterBytes;
+  
+    xCover_Context_t*         s_ctxt;
+    xCover_FILE_reporter_t*   s_defaultReporter;
+    platformstl::atomic_int_t s_mx;
+    int                       s_apiInit;
 
     xcover_rc_t xcover_init_onetime()
     {
@@ -462,7 +482,7 @@ namespace
 
     void xcover_uninit_onetime()
     {
-        STLSOFT_ASSERT(NULL != s_ctxt);
+        STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
         STLSOFT_ASSERT(NULL != s_defaultReporter);
 
         s_defaultReporter->~xCover_FILE_reporter_t();
@@ -493,7 +513,7 @@ XCOVER_CALL(xcover_rc_t) xcover_init(void)
 
 XCOVER_CALL(void) xcover_uninit(void)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     platformstl::spin_mutex                         mx(&s_mx);
     stlsoft::lock_scope<platformstl::spin_mutex>    lock(mx);
@@ -516,6 +536,8 @@ XCOVER_CALL(char const*) xcover_getApiCodeString(xcover_rc_t code)
         case    XCOVER_RC_FILE_NOT_FOUND:       return "the specified file does not exist";
         case    XCOVER_RC_ALIAS_NOT_FOUND:      return "the specified alias does not exist";
         case    XCOVER_RC_ALIAS_ALREADY_USED:   return "the specified alias is already used";
+
+        case    XCOVER_RC_last_:                break;
     }
 
     return "<<unknown init code>>";
@@ -528,7 +550,7 @@ XCOVER_CALL(size_t) xcover_getApiCodeStringLength(xcover_rc_t code)
 
 XCOVER_CALL(xcover_rc_t) xcover_associateFileWithGroup(char const* fileName, int line, char const* groupName)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     try
     {
@@ -550,7 +572,7 @@ XCOVER_CALL(xcover_rc_t) xcover_associateFileWithGroup(char const* fileName, int
 
 XCOVER_CALL(xcover_rc_t) xcover_createFileAlias(char const* fileName, int line, char const* aliasName)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     try
     {
@@ -570,13 +592,13 @@ XCOVER_CALL(xcover_rc_t) xcover_createFileAlias(char const* fileName, int line, 
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_markFileStart(char const* fileName, int line, char const* function, int counter)
+XCOVER_CALL(xcover_rc_t) xcover_markFileStart(char const* fileName, int line, char const* function, int counter, int countForward)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     try
     {
-        return s_ctxt->markFileStart(fileName, line, function, counter);
+        return s_ctxt->markFileStart(fileName, line, function, counter, countForward);
     }
     catch(std::bad_alloc&)
     {
@@ -592,13 +614,13 @@ XCOVER_CALL(xcover_rc_t) xcover_markFileStart(char const* fileName, int line, ch
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_markFileEnd(char const* fileName, int line, char const* function, int counter)
+XCOVER_CALL(xcover_rc_t) xcover_markFileEnd(char const* fileName, int line, char const* function, int counter, int countBackward)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     try
     {
-        return s_ctxt->markFileEnd(fileName, line, function, counter);
+        return s_ctxt->markFileEnd(fileName, line, function, counter, countBackward);
     }
     catch(std::bad_alloc&)
     {
@@ -616,7 +638,7 @@ XCOVER_CALL(xcover_rc_t) xcover_markFileEnd(char const* fileName, int line, char
 
 XCOVER_CALL(xcover_rc_t) xcover_markLine(char const* fileName, int line, char const* function, int counter)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     try
     {
@@ -638,7 +660,7 @@ XCOVER_CALL(xcover_rc_t) xcover_markLine(char const* fileName, int line, char co
 
 XCOVER_CALL(xcover_rc_t) xcover_startGroupCoverage(char const* fileName, int line, char const* groupName)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     try
     {
@@ -660,7 +682,7 @@ XCOVER_CALL(xcover_rc_t) xcover_startGroupCoverage(char const* fileName, int lin
 
 XCOVER_CALL(xcover_rc_t) xcover_endGroupCoverage(char const* fileName, int line, char const* groupName)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     try
     {
@@ -682,7 +704,7 @@ XCOVER_CALL(xcover_rc_t) xcover_endGroupCoverage(char const* fileName, int line,
 
 XCOVER_CALL(xcover_rc_t) xcover_reportGroupCoverage(char const* fileName, int line, char const* groupName, xcover_reporter_t* reporter)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     try
     {
@@ -704,7 +726,7 @@ XCOVER_CALL(xcover_rc_t) xcover_reportGroupCoverage(char const* fileName, int li
 
 XCOVER_CALL(xcover_rc_t) xcover_reportFileCoverage(char const* fileName, xcover_reporter_t* reporter)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     try
     {
@@ -726,7 +748,7 @@ XCOVER_CALL(xcover_rc_t) xcover_reportFileCoverage(char const* fileName, xcover_
 
 XCOVER_CALL(xcover_rc_t) xcover_reportAliasCoverage(char const* aliasName, xcover_reporter_t* reporter)
 {
-    STLSOFT_ASSERT(NULL != s_ctxt);
+    STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
     try
     {
@@ -772,7 +794,7 @@ namespace
     xcover_rc_t xCover_Context_t::associateFileWithGroup(string_t const& fileName, int line, string_t const& groupName)
     {
         // Normalise file name
-        if(~0 != fileName.find('\\'))
+        if(~0u != fileName.find('\\'))
         {
             return associateFileWithGroup(normalise_fileName(fileName), line, groupName);
         }
@@ -807,7 +829,7 @@ namespace
     xcover_rc_t xCover_Context_t::createFileAlias(string_t const& fileName, int line, string_t const& aliasName)
     {
         // Normalise file name
-        if(~0 != fileName.find('\\'))
+        if(~0u != fileName.find('\\'))
         {
             return createFileAlias(normalise_fileName(fileName), line, aliasName);
         }
@@ -839,12 +861,12 @@ namespace
         }
     }
 
-    xcover_rc_t xCover_Context_t::markFileStart(string_t const& fileName, int line, char const* function, int counter)
+    xcover_rc_t xCover_Context_t::markFileStart(string_t const& fileName, int line, char const* function, int counter, int countForward)
     {
         // Normalise file name
-        if(~0 != fileName.find('\\'))
+        if(~0u != fileName.find('\\'))
         {
-            return markFileStart(normalise_fileName(fileName), line, function, counter);
+            return markFileStart(normalise_fileName(fileName), line, function, counter, countForward);
         }
 
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
@@ -861,17 +883,17 @@ namespace
         // Now we mark the file's start
         xCover_File_t& file = *(*it_File).second;
 
-        file.markStart(line, counter);
+        file.markStart(line, counter, countForward);
 
         return XCOVER_RC_SUCCESS;
     }
 
-    xcover_rc_t xCover_Context_t::markFileEnd(string_t const& fileName, int line, char const* function, int counter)
+    xcover_rc_t xCover_Context_t::markFileEnd(string_t const& fileName, int line, char const* function, int counter, int countBackward)
     {
         // Normalise file name
-        if(~0 != fileName.find('\\'))
+        if(~0u != fileName.find('\\'))
         {
-            return markFileEnd(normalise_fileName(fileName), line, function, counter);
+            return markFileEnd(normalise_fileName(fileName), line, function, counter, countBackward);
         }
 
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
@@ -888,7 +910,7 @@ namespace
         // Now we mark the file's end
         xCover_File_t& file = *(*it_File).second;
 
-        file.markEnd(line, counter);
+        file.markEnd(line, counter, countBackward);
 
         return XCOVER_RC_SUCCESS;
     }
@@ -896,7 +918,7 @@ namespace
     xcover_rc_t xCover_Context_t::markLine(string_t const& fileName, char const* function, int counter, int line)
     {
         // Normalise file name
-        if(~0 != fileName.find('\\'))
+        if(~0u != fileName.find('\\'))
         {
             return markLine(normalise_fileName(fileName), function, counter, line);
         }
@@ -912,7 +934,7 @@ namespace
             it_File = m_files.insert(std::make_pair(normalise_fileName(fileName), File_ptr_t(new xCover_File_t(fileName)))).first;
 
             /// ... and mark this as the start
-            (*it_File).second->markStart(line, counter);
+            (*it_File).second->markStart(line, counter, 0);
         }
 
         (*it_File).second->markLine(line, counter);
@@ -994,7 +1016,7 @@ namespace
     xcover_rc_t xCover_Context_t::reportFileCoverage(string_t const& fileName, xcover_reporter_t* reporter) const
     {
         // Normalise file name
-        if(~0 != fileName.find('\\'))
+        if(~0u != fileName.find('\\'))
         {
             return reportFileCoverage(normalise_fileName(fileName), reporter);
         }
@@ -1089,7 +1111,7 @@ namespace
 # if defined(XCOVER_USE_FNMATCH_)
                 if(0 == ::fnmatch(fileName.c_str(), (*it).first.c_str(), FNM_PATHNAME))
 # elif defined(XCOVER_USE_PATHMATCH_)
-                if(::PathMatchSpec((*it).first.c_str(), fileName.c_str()))
+                if(::PathMatchSpecA((*it).first.c_str(), fileName.c_str()))
 # else /* ? OS */
 #  error Platform not discriminated
 # endif /* OS */
@@ -1186,7 +1208,14 @@ namespace
 
     void XCOVER_CALLCONV xCover_FILE_reporter_t::onBeginFileReport(char const* fileName, char const* aliasName)
     {
-        fprintf(stdout, (NULL == aliasName) ? "[Start of file %s]:\n" : "[Start of file %s; alias %s]:\n", fileName, aliasName);
+        if(NULL == aliasName)
+        {
+            fprintf(stdout, "[Start of file %s]:\n", fileName);
+        }
+        else
+        {
+            fprintf(stdout, "[Start of file %s; alias %s]:\n", fileName, aliasName);
+        }
     }
 
     void XCOVER_CALLCONV xCover_FILE_reporter_t::onEndFileReport(char const* fileName, char const* aliasName, unsigned n)

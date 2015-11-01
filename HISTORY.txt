@@ -2,7 +2,23 @@
 xCover - History
 ===================
 
-Updated:    4th April 2010
+Updated:    1st November 2015
+
+
+1st November 2015 - 0.3.3
+-------------------------
+
+ * added countForward / countBackward feature
+ * added support for Clang
+ * added support for GCC 4.4
+ * added support for GCC 4.5
+ * added support for GCC 4.6
+ * added support for GCC 4.7
+ * added support for Visual C++ 10
+ * added support for Visual C++ 11
+ * added support for Visual C++ 12
+ * added support for Visual C++ 13
+ * added support for Visual C++ 14
 
 
 4th April 2010 - 0.2.7

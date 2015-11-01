@@ -1,11 +1,11 @@
 ############################################################################
 # File:     makefile
 #
-# Purpose:  Makefile for the xCover:C project, for the Visual C++ 8.0 (UNIXEm)
+# Purpose:  Makefile for the xCover:C project, for the Visual C++ 8.0 (UNIXem)
 #           compiler, on UNIX
 #
 # Created:  28th December 2008
-# Updated:  19th January 2010
+# Updated:  1st November 2015
 #
 ############################################################################
 
@@ -36,6 +36,7 @@ OS_TAG				=   .unix
 PROJ_TAG			=	xcover
 PROJ_VER_MAJOR		=   0
 PROJ_TAG_VER		=   $(PROJ_TAG).$(PROJ_VER_MAJOR)
+COMP_ARCH_OS_TAG	=	$(COMP_TAG)$(OS_TAG)$(ARCH_TAG)
 
 SHWILD_VER_MAJOR	=	0
 SHWILD_TAG_VER		=	shwild.$(SHWILD_VER_MAJOR)
@@ -112,11 +113,11 @@ $(ENV_LIBPATHS)\
 # lib names
 
 TARGET_LIB_MT_UX = \
- kernel32.lib user32.lib advapi32.lib uuid.lib wininet.lib ole32.lib oleaut32.lib ws2_32.lib shlwapi.lib pthreadVC.lib \
+ kernel32.lib user32.lib advapi32.lib uuid.lib wininet.lib ole32.lib oleaut32.lib ws2_32.lib pthreadVC.lib \
  \
 
 TARGET_LIB_MT_UX_DEBUG = \
- kernel32.lib user32.lib advapi32.lib uuid.lib wininet.lib ole32.lib oleaut32.lib ws2_32.lib shlwapi.lib pthreadVC.lib \
+ kernel32.lib user32.lib advapi32.lib uuid.lib wininet.lib ole32.lib oleaut32.lib ws2_32.lib pthreadVC.lib \
  \
 
 
@@ -420,16 +421,16 @@ XTESTS_HEADERS=\
 # Libraries
 
 # xCover
-LIB_CORE_MT_UX				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.lib
-LIB_CORE_MT_UX_DEBUG				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.debug.lib
+LIB_CORE_MT_UX				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_ARCH_OS_TAG).mt.lib
+LIB_CORE_MT_UX_DEBUG				=	$(PROJ_LIB_DIR)\$(PROJ_TAG_VER).core.$(COMP_ARCH_OS_TAG).mt.debug.lib
 
 # shwild - testing only
-LIB_SHWILD_MT_UX			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.lib
-LIB_SHWILD_MT_UX_DEBUG			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.debug.lib
+LIB_SHWILD_MT_UX			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).mt.lib
+LIB_SHWILD_MT_UX_DEBUG			=	$(PROJ_LIB_DIR)\$(SHWILD_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).mt.debug.lib
 
 # xtests - unit/component testing only
-LIB_XTESTS_MT_UX			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.lib
-LIB_XTESTS_MT_UX_DEBUG			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_TAG)$(OS_TAG)$(ARCH_TAG).mt.debug.lib
+LIB_XTESTS_MT_UX			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).mt.lib
+LIB_XTESTS_MT_UX_DEBUG			=	$(PROJ_LIB_DIR)\$(XTESTS_TAG_VER).xcvr.$(COMP_ARCH_OS_TAG).mt.debug.lib
 
 ########################################
 # Examples

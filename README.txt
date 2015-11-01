@@ -1,11 +1,11 @@
 xCover - README
 ==================
 
-Updated:    4th April 2010
+Updated:    1st November 2015
 
 
 
-See the introduction in the accompanying doc/html/0.2.7/index.html file.
+See the introduction in the accompanying doc/html/0.3.3/index.html file.
 
 
 =============================== End of file ================================

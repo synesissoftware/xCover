@@ -2,7 +2,7 @@
 xCover - Changes
 ===================
 
-Updated:    4th April 2010
+Updated:    1st November 2015
 
 
     ************************************
@@ -14,6 +14,91 @@ Updated:    4th April 2010
     *  *  means a general bullet-point *
     *                                  *
     ************************************
+
+
+1st November 2015 - 0.3.3
+=========================
+
+Summary:
+--------
+
+ * added countForward / countBackward feature
+ * added support for Clang
+ * added support for GCC 4.4
+ * added support for GCC 4.5
+ * added support for GCC 4.6
+ * added support for GCC 4.7
+ * added support for Visual C++ 10
+ * added support for Visual C++ 11
+ * added support for Visual C++ 12
+ * added support for Visual C++ 13
+ * added support for Visual C++ 14
+
+Details:
+--------
+
+General:
+
+ ~ include/xcover/implicit_link.h:
+    + Visual C++ 11 support
+    + Visual C++ 12 support
+    + Visual C++ 13 support
+    + Visual C++ 14 support
+
+Core:
+
+ ~ include/xcover/xcover.h:
+    + Clang support
+    ~ abstraction (of __FUNCTION__ / __func__ support) in terms of STLSOFT_FUNCTION_SUPPORT
+    + countForward / countBackward for file start/end definition
+
+ ~ src/xcover.cpp:
+    + Clang support
+    + countForward / countBackward for file start/end definition
+
+
+Distribution:
+
+Makefiles / Project-files:
+
+ + build/gcc44.unix/makefile
+ + build/gcc45.unix/makefile
+ + build/gcc46.unix/makefile
+ + build/gcc47.unix/makefile
+ + build/vc10/makefile
+ + build/vc10.unixem/makefile
+ + build/vc10.x64/makefile
+ + build/vc11/makefile
+ + build/vc11.unixem/makefile
+ + build/vc11.x64/makefile
+ + build/vc12/makefile
+ + build/vc12.unixem/makefile
+ + build/vc12.x64/makefile
+ + build/vc13/makefile
+ + build/vc13.unixem/makefile
+ + build/vc13.x64/makefile
+ + build/vc14/makefile
+ + build/vc14.unixem/makefile
+ + build/vc14.x64/makefile
+
+
+Examples:
+
+Test:
+
+Test.Unit:
+
+Test.Component:
+
+Test.Scratch:
+
+Depends on:
+
+ * shwild 0.10.1 (bundled in this distribution)
+ * xTests 0.18.5 (bundled in this distribution)
+ * STLSoft 1.9.122 or later
+   (http://stlsoft.org/)
+
 
 
 4th April 2010 - 0.2.7

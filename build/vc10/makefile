@@ -1,7 +1,7 @@
 ############################################################################
 # File:     makefile
 #
-# Purpose:  Makefile for the xCover:C project, for the Visual C++ 8 (Win32)
+# Purpose:  Makefile for the xCover:C project, for the Visual C++ 10 (Win32)
 #           compiler, on Win32
 #
 # Created:  28th December 2008
@@ -24,7 +24,7 @@
 ########################################
 # Project & compiler version
 
-COMP_TAG			=	vc8
+COMP_TAG			=	vc10
 ARCH_TAG            =   
 OS_TAG				=   
 PROJ_TAG			=	xcover

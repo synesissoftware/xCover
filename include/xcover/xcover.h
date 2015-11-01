@@ -4,11 +4,11 @@
  * Purpose:     Main header file for xCover, a C/C++ code coverage library.
  *
  * Created:     1st March 2008
- * Updated:     3rd April 2010
+ * Updated:     1st November 2015
  *
  * Home:        http://xcover.org/
  *
- * Copyright (c) 2008-2010, Matthew Wilson and Synesis Software
+ * Copyright (c) 2008-2015, Matthew Wilson and Synesis Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,9 +49,9 @@
 
 #ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
 # define XCOVER_VER_XCOVER_H_XCOVER_MAJOR       1
-# define XCOVER_VER_XCOVER_H_XCOVER_MINOR       2
-# define XCOVER_VER_XCOVER_H_XCOVER_REVISION    6
-# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        13
+# define XCOVER_VER_XCOVER_H_XCOVER_MINOR       5
+# define XCOVER_VER_XCOVER_H_XCOVER_REVISION    1
+# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        23
 #endif /* !XCOVER_DOCUMENTATION_SKIP_SECTION */
 
 /* /////////////////////////////////////////////////////////////////////////
@@ -73,10 +73,10 @@
  */
 
 #define XCOVER_VER_MAJOR        0
-#define XCOVER_VER_MINOR        2
-#define XCOVER_VER_REVISION     7
+#define XCOVER_VER_MINOR        3
+#define XCOVER_VER_REVISION     3
 
-#define XCOVER_VER              0x000207ff
+#define XCOVER_VER              0x000303ff
 
 /* /////////////////////////////////////////////////////////////////////////
  * Includes - 1
@@ -90,11 +90,18 @@
  * Compatibility
  */
 
-#if _STLSOFT_VER < 0x010961ff
-# error xCover requires version 1.9.97 (or later) of STLSoft; download from www.stlsoft.org
+#if defined(STLSOFT_VER) && \
+    STLSOFT_VER >= 0x010c0000
+# define XTESTS_STLSOFT_1_12_OR_LATER
+#elif _STLSOFT_VER < 0x01097aff
+# error xCover requires version 1.9.122 (or later) of STLSoft; download from www.stlsoft.org
 #endif /* _STLSOFT_VER */
 
-#if \
+#if defined(STLSOFT_CF_FUNCTION_SYMBOL_SUPPORT)
+#elif \
+    defined(STLSOFT_COMPILER_IS_CLANG)
+ /* Clang supports __COUNTER__ */
+#elif \
     defined(STLSOFT_COMPILER_IS_GCC) && \
     (   __GNUC__ > 4 || \
         (   __GNUC__ == 4 && \
@@ -106,10 +113,10 @@
  /* VC++ supports __COUNTER__ from 7.1 onwards */
 #elif \
     defined(__COUNTER__) && \
-    defined(__FUNCTION__)
- /* Arbitrary compiler that defines the symbols. Note: some do not define __FUNCTION__ unless inside a function, hence the explicit tests above */
+    defined(STLSOFT_FUNCTION_SYMBOL)
+ /* Arbitrary compiler that defines the symbols. Note: some do not define __func__ / __FUNCTION__ unless inside a function, hence the explicit tests above */
 #else
-# error xCover can only be used with compilers that support the (non-standard) predefined pre-processor symbol __COUNTER__ and the (standard) predefined pre-processor symbol __FUNCTION__
+# error xCover can only be used with compilers that support the (non-standard) predefined preprocessor symbol __COUNTER__ and either the (standard) predefined preprocessor symbol __func__ or the (non-standard) preprocessor symbol __FUNCTION__
 #endif /* compiler */
 
 /* /////////////////////////////////////////////////////////////////////////
@@ -178,7 +185,7 @@ namespace xcover
  * \note This line must be executed at least once for the start of the file
  *   to be marked
  */
-#define XCOVER_MARK_FILE_START()                            XCOVER_NS_QUAL(::xcover, xcover_markFileStart)(__FILE__, __LINE__, __FUNCTION__, __COUNTER__)
+#define XCOVER_MARK_FILE_START()                            XCOVER_NS_QUAL(::xcover, xcover_markFileStart)(__FILE__, __LINE__, __FUNCTION__, __COUNTER__, 0)
 
 /** \def XCOVER_MARK_FILE_END()
  *
@@ -189,7 +196,7 @@ namespace xcover
  * \note This line must be executed at least once for the end of the file
  *   to be marked
  */
-#define XCOVER_MARK_FILE_END()                              XCOVER_NS_QUAL(::xcover, xcover_markFileEnd)(__FILE__, __LINE__, __FUNCTION__, __COUNTER__)
+#define XCOVER_MARK_FILE_END()                              XCOVER_NS_QUAL(::xcover, xcover_markFileEnd)(__FILE__, __LINE__, __FUNCTION__, __COUNTER__, 0)
 
 /** \def XCOVER_MARK_LINE()
  *
@@ -388,10 +395,11 @@ XCOVER_CALL(xcover_rc_t) xcover_associateFileWithGroup(char const* fileName, int
  * \param line The line number
  * \param function The function name
  * \param counter The counter
+ * \param countForward The number of marks to count forward. (Used in macros that themselves use <code>__COUNTER__</code>)
  *
  * \note any prior markings, via xcover_markLine() (XCOVER_MARK_LINE()) will be discarded
  */
-XCOVER_CALL(xcover_rc_t) xcover_markFileStart(char const* fileName, int line, char const* function, int counter);
+XCOVER_CALL(xcover_rc_t) xcover_markFileStart(char const* fileName, int line, char const* function, int counter, int countForward);
 
 /** Marks the end of a file
  *
@@ -399,10 +407,11 @@ XCOVER_CALL(xcover_rc_t) xcover_markFileStart(char const* fileName, int line, ch
  * \param line The line number
  * \param function The function name
  * \param counter The counter
+ * \param countBackward The number of marks to count forward. (Used in macros that themselves use <code>__COUNTER__</code>)
  *
  * \note any posterior markings, via xcover_markLine() (XCOVER_MARK_LINE()) will be discarded
  */
-XCOVER_CALL(xcover_rc_t) xcover_markFileEnd(char const* fileName, int line, char const* function, int counter);
+XCOVER_CALL(xcover_rc_t) xcover_markFileEnd(char const* fileName, int line, char const* function, int counter, int countBackward);
 
 /** Marks a line for coverage
  *
@@ -469,8 +478,8 @@ XCOVER_CALL(xcover_rc_t) xcover_reportAliasCoverage(char const* aliasName, xcove
 #  define XCOVER_YIELD_SYMBOL_(x)       x 
 #  define XCOVER_PASTE__(x, y)          x ## y
 #  define XCOVER_PASTE_(x, y)           XCOVER_PASTE__(x, y)
-#  define XCOVER_DEFINE_FILE_STARTER()              namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzMarker) XCOVER_PASTE_(xcover_file_starter_, __COUNTER__)(XCOVER_NS_QUAL(::xcover, xcover_markFileStart), __FILE__, __LINE__, __COUNTER__); } 
-#  define XCOVER_DEFINE_FILE_ENDER()                namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzMarker) XCOVER_PASTE_(xcover_file_ender_, XCOVER_YIELD_SYMBOL_(__COUNTER__))(XCOVER_NS_QUAL(::xcover, xcover_markFileEnd), __FILE__, __LINE__, __COUNTER__); }
+#  define XCOVER_DEFINE_FILE_STARTER()              namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzMarker) XCOVER_PASTE_(xcover_file_starter_, __COUNTER__)(XCOVER_NS_QUAL(::xcover, xcover_markFileStart), __FILE__, __LINE__, __COUNTER__, +1); } 
+#  define XCOVER_DEFINE_FILE_ENDER()                namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzMarker) XCOVER_PASTE_(xcover_file_ender_, XCOVER_YIELD_SYMBOL_(__COUNTER__))(XCOVER_NS_QUAL(::xcover, xcover_markFileEnd), __FILE__, __LINE__, __COUNTER__, +1); }
 #  define XCOVER_FILE_GROUP_ASSOCIATOR(groupName)   namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzFileGroupAssociator) XCOVER_PASTE_(xcover_file_group_associator_, XCOVER_YIELD_SYMBOL_(__COUNTER__))(__FILE__, __LINE__, groupName); }
 
 class xcover_SchwarzFileGroupAssociator
@@ -485,9 +494,9 @@ public:
 class xcover_SchwarzMarker
 {
 public:
-    xcover_SchwarzMarker(xcover_rc_t (XCOVER_CALLCONV* pfn)(char const*, int, char const*, int), char const* fileName, int line, int counter)
+    xcover_SchwarzMarker(xcover_rc_t (XCOVER_CALLCONV* pfn)(char const*, int, char const*, int, int), char const* fileName, int line, int counter, int countExtra)
     {
-        (*pfn)(fileName, line, __FUNCTION__, counter);
+        (*pfn)(fileName, line, __FUNCTION__, counter, countExtra);
     }
 };
 
@@ -501,10 +510,10 @@ public:
  */
 class xcover_initialiser
 {
-public: /// Member Types
+public: /* Member Types */
     typedef xcover_initialiser  class_type;
 
-public: /// Construction
+public: /* Construction */
     xcover_initialiser()
     {
         if(xcover_init() < 0)
@@ -517,8 +526,8 @@ public: /// Construction
         xcover_uninit();
     }
 private:
-    xcover_initialiser(class_type const&);
-    class_type& operator =(class_type const&);
+    xcover_initialiser(class_type const&);      // proscribed
+    class_type& operator =(class_type const&);  // proscribed
 };
 
 namespace

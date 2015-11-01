@@ -4,11 +4,11 @@
  * Purpose:     Implicit linking for the FastFormat API
  *
  * Created:     3rd January 2009
- * Updated:     12th August 2009
+ * Updated:     13th October 2015
  *
  * Home:        http://xcover.org/
  *
- * Copyright (c) 2007-2009, Matthew Wilson and Synesis Software
+ * Copyright (c) 2007-2015, Matthew Wilson and Synesis Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,9 +51,9 @@
 
 #ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
 # define XCOVER_VER_XCOVER_H_IMPLICIT_LINK_MAJOR    1
-# define XCOVER_VER_XCOVER_H_IMPLICIT_LINK_MINOR    1
+# define XCOVER_VER_XCOVER_H_IMPLICIT_LINK_MINOR    2
 # define XCOVER_VER_XCOVER_H_IMPLICIT_LINK_REVISION 1
-# define XCOVER_VER_XCOVER_H_IMPLICIT_LINK_EDIT     3
+# define XCOVER_VER_XCOVER_H_IMPLICIT_LINK_EDIT     4
 #endif /* !XCOVER_DOCUMENTATION_SKIP_SECTION */
 
 /* /////////////////////////////////////////////////////////////////////////
@@ -177,6 +177,14 @@
 #    define XCOVER_IMPL_LINK_COMPILER_NAME          "vc8"
 #   elif _MSC_VER == 1500
 #    define XCOVER_IMPL_LINK_COMPILER_NAME          "vc9"
+#   elif _MSC_VER == 1600
+#    define XCOVER_IMPL_LINK_COMPILER_NAME          "vc10"
+#   elif _MSC_VER == 1700
+#    define XCOVER_IMPL_LINK_COMPILER_NAME          "vc11"
+#   elif _MSC_VER == 1800
+#    define XCOVER_IMPL_LINK_COMPILER_NAME          "vc12"
+#   elif _MSC_VER == 1900
+#    define XCOVER_IMPL_LINK_COMPILER_NAME          "vc14"
 #   else /* ? _MSC_VER */
 #    error Visual C++ version not supported
 #   endif /* _MSC_VER */
