@@ -49,13 +49,13 @@
 
 #ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
 # define XCOVER_VER_XCOVER_H_XCOVER_MAJOR       1
-# define XCOVER_VER_XCOVER_H_XCOVER_MINOR       5
+# define XCOVER_VER_XCOVER_H_XCOVER_MINOR       6
 # define XCOVER_VER_XCOVER_H_XCOVER_REVISION    1
-# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        23
+# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        24
 #endif /* !XCOVER_DOCUMENTATION_SKIP_SECTION */
 
 /* /////////////////////////////////////////////////////////////////////////
- * Version information
+ * version information
  */
 
 /**
@@ -79,7 +79,7 @@
 #define XCOVER_VER              0x000303ff
 
 /* /////////////////////////////////////////////////////////////////////////
- * Includes - 1
+ * includes - 1
  */
 
 #ifndef STLSOFT_INCL_STLSOFT_H_STLSOFT
@@ -87,7 +87,7 @@
 #endif /* !STLSOFT_INCL_STLSOFT_H_STLSOFT */
 
 /* /////////////////////////////////////////////////////////////////////////
- * Compatibility
+ * compatibility
  */
 
 #if defined(STLSOFT_VER) && \
@@ -120,7 +120,7 @@
 #endif /* compiler */
 
 /* /////////////////////////////////////////////////////////////////////////
- * Includes - 2
+ * includes - 2
  */
 
 #ifdef __cplusplus
@@ -130,7 +130,7 @@
 #include <stdio.h>
 
 /* /////////////////////////////////////////////////////////////////////////
- * Namespace
+ * namespace
  */
 
 #if defined(_STLSOFT_NO_NAMESPACE)
@@ -143,7 +143,7 @@ namespace xcover
 #endif /* !XCOVER_NO_NAMESPACE */
 
 /* /////////////////////////////////////////////////////////////////////////
- * Features
+ * features
  */
 
 #ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
@@ -169,11 +169,11 @@ namespace xcover
 #endif /* !XCOVER_DOCUMENTATION_SKIP_SECTION */
 
 /* /////////////////////////////////////////////////////////////////////////
- * Constants & definitions
+ * constants & definitions
  */
 
 /* /////////////////////////////////////////////////////////////////////////
- * Macros
+ * macros
  */
 
 /** \def XCOVER_MARK_FILE_START()
@@ -283,10 +283,10 @@ namespace xcover
 #define XCOVER_REPORT_ALIAS_COVERAGE(aliasName, reporter)   XCOVER_NS_QUAL(::xcover, xcover_reportAliasCoverage)(aliasName, reporter)
 
 /* /////////////////////////////////////////////////////////////////////////
- * Error codes
+ * status codes
  */
 
-/** API function error code */
+/** API function status code */
 enum xcover_rc_t
 {
     /*!< The operation completed successfully */
@@ -326,7 +326,7 @@ typedef enum xcover_rc_t        xcover_rc_t;
 #endif /* !__cplusplus */
 
 /* /////////////////////////////////////////////////////////////////////////
- * Typedefs
+ * typedefs
  */
 
 /** Structure used by reporters to indicate an uncovered mark
@@ -362,15 +362,23 @@ typedef struct xcover_reporter_t    xcover_reporter_t;
 
 /** Initialises the xCover API
  */
-XCOVER_CALL(xcover_rc_t) xcover_init(void);
+XCOVER_CALL(xcover_rc_t)
+xcover_init(void);
 
 /** Uninitialises the xCover API
  */
-XCOVER_CALL(void) xcover_uninit(void);
+XCOVER_CALL(void)
+xcover_uninit(void);
 
 #ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
-XCOVER_CALL(char const*) xcover_getApiCodeString(xcover_rc_t code);
-XCOVER_CALL(size_t) xcover_getApiCodeStringLength(xcover_rc_t code);
+XCOVER_CALL(char const*)
+xcover_getApiCodeString(
+    xcover_rc_t code
+);
+XCOVER_CALL(size_t)
+xcover_getApiCodeStringLength(
+    xcover_rc_t code
+);
 #endif /* !XCOVER_DOCUMENTATION_SKIP_SECTION */
 
 /** Create file alias
@@ -379,7 +387,12 @@ XCOVER_CALL(size_t) xcover_getApiCodeStringLength(xcover_rc_t code);
  * \param line The line number
  * \param aliasName The alias name
  */
-XCOVER_CALL(xcover_rc_t) xcover_createFileAlias(char const* fileName, int line, char const* aliasName);
+XCOVER_CALL(xcover_rc_t)
+xcover_createFileAlias(
+    char const* fileName
+,   int         line
+,   char const* aliasName
+);
 
 /** Associates the file with a group
  *
@@ -387,7 +400,12 @@ XCOVER_CALL(xcover_rc_t) xcover_createFileAlias(char const* fileName, int line, 
  * \param line The line number
  * \param groupName The group name
  */
-XCOVER_CALL(xcover_rc_t) xcover_associateFileWithGroup(char const* fileName, int line, char const* groupName);
+XCOVER_CALL(xcover_rc_t)
+xcover_associateFileWithGroup(
+    char const* fileName
+,   int         line
+,   char const* groupName
+);
 
 /** Marks the start of a file
  *
@@ -399,7 +417,14 @@ XCOVER_CALL(xcover_rc_t) xcover_associateFileWithGroup(char const* fileName, int
  *
  * \note any prior markings, via xcover_markLine() (XCOVER_MARK_LINE()) will be discarded
  */
-XCOVER_CALL(xcover_rc_t) xcover_markFileStart(char const* fileName, int line, char const* function, int counter, int countForward);
+XCOVER_CALL(xcover_rc_t)
+xcover_markFileStart(
+    char const* fileName
+,   int         line
+,   char const* function
+,   int         counter
+,   int         countForward
+);
 
 /** Marks the end of a file
  *
@@ -411,7 +436,14 @@ XCOVER_CALL(xcover_rc_t) xcover_markFileStart(char const* fileName, int line, ch
  *
  * \note any posterior markings, via xcover_markLine() (XCOVER_MARK_LINE()) will be discarded
  */
-XCOVER_CALL(xcover_rc_t) xcover_markFileEnd(char const* fileName, int line, char const* function, int counter, int countBackward);
+XCOVER_CALL(xcover_rc_t)
+xcover_markFileEnd(
+    char const* fileName
+,   int         line
+,   char const* function
+,   int         counter
+,   int         countBackward
+);
 
 /** Marks a line for coverage
  *
@@ -420,7 +452,13 @@ XCOVER_CALL(xcover_rc_t) xcover_markFileEnd(char const* fileName, int line, char
  * \param function The function name
  * \param counter The counter
  */
-XCOVER_CALL(xcover_rc_t) xcover_markLine(char const* fileName, int line, char const* function, int counter);
+XCOVER_CALL(xcover_rc_t)
+xcover_markLine(
+    char const* fileName
+,   int         line
+,   char const* function
+,   int         counter
+);
 
 /** 
  *
@@ -428,7 +466,12 @@ XCOVER_CALL(xcover_rc_t) xcover_markLine(char const* fileName, int line, char co
  * \param line The line number
  * \param groupName The group name
  */
-XCOVER_CALL(xcover_rc_t) xcover_startGroupCoverage(char const* fileName, int line, char const* groupName);
+XCOVER_CALL(xcover_rc_t)
+xcover_startGroupCoverage(
+    char const* fileName
+,   int         line
+,   char const* groupName
+);
 
 /** 
  *
@@ -436,7 +479,12 @@ XCOVER_CALL(xcover_rc_t) xcover_startGroupCoverage(char const* fileName, int lin
  * \param line The line number
  * \param groupName The group name
  */
-XCOVER_CALL(xcover_rc_t) xcover_endGroupCoverage(char const* fileName, int line, char const* groupName);
+XCOVER_CALL(xcover_rc_t)
+xcover_endGroupCoverage(
+    char const* fileName
+,   int         line
+,   char const* groupName
+);
 
 /** Reports coverage for all files in the group
  *
@@ -448,7 +496,13 @@ XCOVER_CALL(xcover_rc_t) xcover_endGroupCoverage(char const* fileName, int line,
  *
  * \return An error code from the \link xcover::xcover_rc_t xcover_rc_t\endlink enumeration
  */
-XCOVER_CALL(xcover_rc_t) xcover_reportGroupCoverage(char const* fileName, int line, char const* groupName, xcover_reporter_t* reporter);
+XCOVER_CALL(xcover_rc_t)
+xcover_reportGroupCoverage(
+    char const*         fileName
+,   int                 line
+,   char const*         groupName
+,   xcover_reporter_t*  reporter
+);
 
 /** Reports coverage for a files
  *
@@ -457,7 +511,11 @@ XCOVER_CALL(xcover_rc_t) xcover_reportGroupCoverage(char const* fileName, int li
  *
  * \return An error code from the \link xcover::xcover_rc_t xcover_rc_t\endlink enumeration
  */
-XCOVER_CALL(xcover_rc_t) xcover_reportFileCoverage(char const* fileName, xcover_reporter_t* reporter);
+XCOVER_CALL(xcover_rc_t)
+xcover_reportFileCoverage(
+    char const*         fileName
+,   xcover_reporter_t*  reporter
+);
 
 /** Reports coverage for all files matching the alias
  *
@@ -466,7 +524,11 @@ XCOVER_CALL(xcover_rc_t) xcover_reportFileCoverage(char const* fileName, xcover_
  *
  * \return An error code from the \link xcover::xcover_rc_t xcover_rc_t\endlink enumeration
  */
-XCOVER_CALL(xcover_rc_t) xcover_reportAliasCoverage(char const* aliasName, xcover_reporter_t* reporter);
+XCOVER_CALL(xcover_rc_t)
+xcover_reportAliasCoverage(
+    char const*         fileName
+,   xcover_reporter_t*  reporter
+);
 
 /* /////////////////////////////////////////////////////////////////////////
  * C++-only functionality
@@ -485,7 +547,11 @@ XCOVER_CALL(xcover_rc_t) xcover_reportAliasCoverage(char const* aliasName, xcove
 class xcover_SchwarzFileGroupAssociator
 {
 public:
-    xcover_SchwarzFileGroupAssociator(char const* fileName, int line, char const* groupName)
+    xcover_SchwarzFileGroupAssociator(
+        char const* fileName
+    ,   int         line
+    ,   char const* groupName
+    )
     {
         XCOVER_NS_QUAL(::xcover, xcover_associateFileWithGroup)(fileName, line, groupName);
     }
@@ -540,7 +606,7 @@ namespace
 #endif /* __cplusplus */
 
 /* /////////////////////////////////////////////////////////////////////////
- * Helper functions
+ * helper functions
  */
 
 /* /////////////////////////////////////////////////////////////////////////
@@ -548,38 +614,62 @@ namespace
  */
 
 /* /////////////////////////////////////////////////////////////////////////
- * String Access Shims
+ * string access shims
  */
 
 #ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
-STLSOFT_INLINE char const* c_str_data_a(xcover_rc_t code)
+STLSOFT_INLINE
+char const*
+c_str_data_a(
+    xcover_rc_t code
+)
 {
     return xcover_getApiCodeString(code);
 }
 
-STLSOFT_INLINE char const* c_str_data(xcover_rc_t code)
+STLSOFT_INLINE
+char const*
+c_str_data(
+    xcover_rc_t code
+)
 {
     return xcover_getApiCodeString(code);
 }
 
 
-STLSOFT_INLINE size_t c_str_len_a(xcover_rc_t code)
+STLSOFT_INLINE
+size_t
+c_str_len_a(
+    xcover_rc_t code
+)
 {
     return xcover_getApiCodeStringLength(code);
 }
 
-STLSOFT_INLINE size_t c_str_len(xcover_rc_t code)
+STLSOFT_INLINE
+size_t
+c_str_len(
+    xcover_rc_t code
+)
 {
     return xcover_getApiCodeStringLength(code);
 }
 
 
-STLSOFT_INLINE char const* c_str_ptr_a(xcover_rc_t code)
+STLSOFT_INLINE
+char const*
+c_str_ptr_a(
+    xcover_rc_t code
+)
 {
     return xcover_getApiCodeString(code);
 }
 
-STLSOFT_INLINE char const* c_str_ptr(xcover_rc_t code)
+STLSOFT_INLINE
+char const*
+c_str_ptr(
+    xcover_rc_t code
+)
 {
     return xcover_getApiCodeString(code);
 }
@@ -591,12 +681,16 @@ STLSOFT_INLINE char const* c_str_ptr(xcover_rc_t code)
 
 #ifndef XCOVER_NO_NAMESPACE
 
-inline xcover_rc_t init()
+inline
+xcover_rc_t
+init()
 {
     return xcover_init();
 }
 
-inline void uninit()
+inline
+xcover_rc_t
+uninit()
 {
     xcover_uninit();
 }
@@ -604,7 +698,7 @@ inline void uninit()
 #endif /* !XCOVER_NO_NAMESPACE */
 
 /* /////////////////////////////////////////////////////////////////////////
- * Namespace
+ * namespace
  */
 
 #ifndef XCOVER_NO_NAMESPACE
