@@ -5,7 +5,7 @@
  *              library.
  *
  * Created:     1st March 2008
- * Updated:     8th October 2015
+ * Updated:     15th November 2015
  *
  * Home:        http://xcover.org/
  *
@@ -154,6 +154,19 @@ namespace
         return fileName;
     }
 #endif /* OS */
+
+    static
+    bool
+    string_contains(
+        string_t const&	s
+    ,	char_t const	ch
+    )
+    {
+        return string_t::npos != s.find(ch);
+    }
+
+
+
 
     struct xCover_LineAndCounter_t
     {
@@ -794,7 +807,7 @@ namespace
     xcover_rc_t xCover_Context_t::associateFileWithGroup(string_t const& fileName, int line, string_t const& groupName)
     {
         // Normalise file name
-        if(~0u != fileName.find('\\'))
+        if(string_contains(fileName, '\\'))
         {
             return associateFileWithGroup(normalise_fileName(fileName), line, groupName);
         }
@@ -829,7 +842,7 @@ namespace
     xcover_rc_t xCover_Context_t::createFileAlias(string_t const& fileName, int line, string_t const& aliasName)
     {
         // Normalise file name
-        if(~0u != fileName.find('\\'))
+        if(string_contains(fileName, '\\'))
         {
             return createFileAlias(normalise_fileName(fileName), line, aliasName);
         }
@@ -864,7 +877,7 @@ namespace
     xcover_rc_t xCover_Context_t::markFileStart(string_t const& fileName, int line, char const* function, int counter, int countForward)
     {
         // Normalise file name
-        if(~0u != fileName.find('\\'))
+        if(string_contains(fileName, '\\'))
         {
             return markFileStart(normalise_fileName(fileName), line, function, counter, countForward);
         }
@@ -891,7 +904,7 @@ namespace
     xcover_rc_t xCover_Context_t::markFileEnd(string_t const& fileName, int line, char const* function, int counter, int countBackward)
     {
         // Normalise file name
-        if(~0u != fileName.find('\\'))
+        if(string_contains(fileName, '\\'))
         {
             return markFileEnd(normalise_fileName(fileName), line, function, counter, countBackward);
         }
@@ -918,7 +931,7 @@ namespace
     xcover_rc_t xCover_Context_t::markLine(string_t const& fileName, char const* function, int counter, int line)
     {
         // Normalise file name
-        if(~0u != fileName.find('\\'))
+        if(string_contains(fileName, '\\'))
         {
             return markLine(normalise_fileName(fileName), function, counter, line);
         }
@@ -1016,7 +1029,7 @@ namespace
     xcover_rc_t xCover_Context_t::reportFileCoverage(string_t const& fileName, xcover_reporter_t* reporter) const
     {
         // Normalise file name
-        if(~0u != fileName.find('\\'))
+        if(string_contains(fileName, '\\'))
         {
             return reportFileCoverage(normalise_fileName(fileName), reporter);
         }
@@ -1050,9 +1063,9 @@ namespace
         {
             // 2. Name+Ext:
             // 3. Name Only:
-            if(~0u == fileName.find('/'))
+            if(!string_contains(fileName, '/'))
             {
-                const bool hasExtension = (~0u != fileName.find('.'));
+                const bool hasExtension = (string_contains(fileName, '.'));
 
                 { for(files_type_::const_iterator it = m_files.begin(); it != m_files.end(); ++it)
                 {
