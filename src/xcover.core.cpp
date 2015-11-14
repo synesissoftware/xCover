@@ -166,8 +166,8 @@ namespace
     static
     bool
     string_contains(
-        string_t const&	s
-    ,	char_t const	ch
+        string_t const& s
+    ,   char_t const    ch
     )
     {
         return string_t::npos != s.find(ch);
@@ -874,7 +874,12 @@ namespace
     void xCover_Context_t::operator delete(void*, void* )
     {}
 
-    xcover_rc_t xCover_Context_t::associateFileWithGroup(string_t const& fileName, int line, string_t const& groupName)
+    xcover_rc_t
+    xCover_Context_t::associateFileWithGroup(
+        string_t const& fileName
+    ,   int             line
+    ,   string_t const& groupName
+    )
     {
         // Normalise file name
         if(string_contains(fileName, '\\'))
@@ -909,7 +914,12 @@ namespace
         return XCOVER_RC_SUCCESS;
     }
 
-    xcover_rc_t xCover_Context_t::createFileAlias(string_t const& fileName, int line, string_t const& aliasName)
+    xcover_rc_t
+    xCover_Context_t::createFileAlias(
+        string_t const& fileName
+    ,   int             line
+    ,   string_t const& aliasName
+    )
     {
         // Normalise file name
         if(string_contains(fileName, '\\'))
@@ -944,7 +954,14 @@ namespace
         }
     }
 
-    xcover_rc_t xCover_Context_t::markFileStart(string_t const& fileName, int line, char const* function, int counter, int countForward)
+    xcover_rc_t
+    xCover_Context_t::markFileStart(
+        string_t const& fileName
+    ,   int             line
+    ,   char const*     function
+    ,   int             counter
+    ,   int             countForward
+    )
     {
         // Normalise file name
         if(string_contains(fileName, '\\'))
@@ -971,7 +988,14 @@ namespace
         return XCOVER_RC_SUCCESS;
     }
 
-    xcover_rc_t xCover_Context_t::markFileEnd(string_t const& fileName, int line, char const* function, int counter, int countBackward)
+    xcover_rc_t
+    xCover_Context_t::markFileEnd(
+        string_t const& fileName
+    ,   int             line
+    ,   char const*     function
+    ,   int             counter
+    ,   int             countBackward
+    )
     {
         // Normalise file name
         if(string_contains(fileName, '\\'))
@@ -998,7 +1022,13 @@ namespace
         return XCOVER_RC_SUCCESS;
     }
 
-    xcover_rc_t xCover_Context_t::markLine(string_t const& fileName, char const* function, int counter, int line)
+    xcover_rc_t
+    xCover_Context_t::markLine(
+        string_t const& fileName
+    ,   char const*     function
+    ,   int             counter
+    ,   int             line
+    )
     {
         // Normalise file name
         if(string_contains(fileName, '\\'))
@@ -1025,7 +1055,12 @@ namespace
         return XCOVER_RC_SUCCESS;
     }
 
-    xcover_rc_t xCover_Context_t::startGroupCoverage(string_t const& /* fileName */, int /* line */, string_t const& groupName)
+    xcover_rc_t
+    xCover_Context_t::startGroupCoverage(
+        string_t const& /* fileName */
+    ,   int             /* line */
+    ,   string_t const& groupName
+    )
     {
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
 
@@ -1044,7 +1079,12 @@ namespace
         return XCOVER_RC_SUCCESS;
     }
 
-    xcover_rc_t xCover_Context_t::endGroupCoverage(string_t const& /* fileName */, int /* line */, string_t const& groupName)
+    xcover_rc_t
+    xCover_Context_t::endGroupCoverage(
+        string_t const& /* fileName */
+    ,   int             /* line */
+    ,   string_t const& groupName
+    )
     {
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
 
@@ -1063,7 +1103,13 @@ namespace
         return XCOVER_RC_SUCCESS;
     }
 
-    xcover_rc_t xCover_Context_t::reportGroupCoverage(string_t const& /* fileName */, int /* line */, string_t const& groupName, xcover_reporter_t* reporter) const
+    xcover_rc_t
+    xCover_Context_t::reportGroupCoverage(
+        string_t const&  /* fileName */
+    ,   int              /* line */
+    ,   string_t const&     groupName
+    ,   xcover_reporter_t*  reporter
+    ) const
     {
         stlsoft::lock_scope<mutex_type_>    lock(const_cast<mutex_type_&>(m_mutex));
 
@@ -1096,7 +1142,11 @@ namespace
         }
     }
 
-    xcover_rc_t xCover_Context_t::reportFileCoverage(string_t const& fileName, xcover_reporter_t* reporter) const
+    xcover_rc_t
+    xCover_Context_t::reportFileCoverage(
+        string_t const&     fileName
+    ,   xcover_reporter_t*  reporter
+    ) const
     {
         // Normalise file name
         if(string_contains(fileName, '\\'))
@@ -1230,7 +1280,11 @@ namespace
         }
     }
 
-    xcover_rc_t xCover_Context_t::reportAliasCoverage(string_t const& aliasName, xcover_reporter_t* reporter) const
+    xcover_rc_t
+    xCover_Context_t::reportAliasCoverage(
+        string_t const&     aliasName
+    ,   xcover_reporter_t*  reporter
+    ) const
     {
         stlsoft::lock_scope<mutex_type_>    lock(const_cast<mutex_type_&>(m_mutex));
 
