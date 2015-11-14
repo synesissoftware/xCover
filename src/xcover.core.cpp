@@ -5,7 +5,7 @@
  *              library.
  *
  * Created:     1st March 2008
- * Updated:     15th November 2015
+ * Updated:     14th November 2015
  *
  * Home:        http://xcover.org/
  *
@@ -140,7 +140,11 @@ namespace
 
 #if defined(PLATFORMSTL_OS_IS_WINDOWS) || \
     defined(_WIN32)
-    inline string_t normalise_fileName(string_t const& fileName)
+    inline
+    string_t
+    normalise_fileName(
+        string_t const& fileName
+    )
     {
         string_t newFileName(fileName);
 
@@ -149,7 +153,11 @@ namespace
         return newFileName;
     }
 #else /* ? OS */
-    inline string_t const& normalise_fileName(string_t const& fileName)
+    inline
+    string_t const&
+    normalise_fileName(
+        string_t const& fileName
+    )
     {
         return fileName;
     }
@@ -378,7 +386,7 @@ namespace
     {
     public:
         xCover_Context_t();
-        ~xCover_Context_t() stlsoft_throw_0();
+        ~xCover_Context_t() STLSOFT_NOEXCEPT;
 
         void* operator new(size_t cb, void* );
         void operator delete(void*, void* );
@@ -511,7 +519,8 @@ namespace
  * API
  */
 
-XCOVER_CALL(xcover_rc_t) xcover_init(void)
+XCOVER_CALL(xcover_rc_t)
+xcover_init(void)
 {
     platformstl::spin_mutex                         mx(&s_mx);
     stlsoft::lock_scope<platformstl::spin_mutex>    lock(mx);
@@ -524,7 +533,8 @@ XCOVER_CALL(xcover_rc_t) xcover_init(void)
     return XCOVER_RC_SUCCESS;
 }
 
-XCOVER_CALL(void) xcover_uninit(void)
+XCOVER_CALL(void)
+xcover_uninit(void)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -537,7 +547,10 @@ XCOVER_CALL(void) xcover_uninit(void)
     }
 }
 
-XCOVER_CALL(char const*) xcover_getApiCodeString(xcover_rc_t code)
+XCOVER_CALL(char const*)
+xcover_getApiCodeString(
+    xcover_rc_t code
+)
 {
     switch(code)
     {
@@ -556,12 +569,20 @@ XCOVER_CALL(char const*) xcover_getApiCodeString(xcover_rc_t code)
     return "<<unknown init code>>";
 }
 
-XCOVER_CALL(size_t) xcover_getApiCodeStringLength(xcover_rc_t code)
+XCOVER_CALL(size_t)
+xcover_getApiCodeStringLength(
+    xcover_rc_t code
+)
 {
     return ::strlen(xcover_getApiCodeString(code));
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_associateFileWithGroup(char const* fileName, int line, char const* groupName)
+XCOVER_CALL(xcover_rc_t)
+xcover_associateFileWithGroup(
+    char const* fileName
+,   int         line
+,   char const* groupName
+)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -583,7 +604,12 @@ XCOVER_CALL(xcover_rc_t) xcover_associateFileWithGroup(char const* fileName, int
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_createFileAlias(char const* fileName, int line, char const* aliasName)
+XCOVER_CALL(xcover_rc_t)
+xcover_createFileAlias(
+    char const* fileName
+,   int         line
+,   char const* aliasName
+)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -605,7 +631,14 @@ XCOVER_CALL(xcover_rc_t) xcover_createFileAlias(char const* fileName, int line, 
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_markFileStart(char const* fileName, int line, char const* function, int counter, int countForward)
+XCOVER_CALL(xcover_rc_t)
+xcover_markFileStart(
+    char const* fileName
+,   int         line
+,   char const* function
+,   int         counter
+,   int         countForward
+)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -627,7 +660,14 @@ XCOVER_CALL(xcover_rc_t) xcover_markFileStart(char const* fileName, int line, ch
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_markFileEnd(char const* fileName, int line, char const* function, int counter, int countBackward)
+XCOVER_CALL(xcover_rc_t)
+xcover_markFileEnd(
+    char const* fileName
+,   int         line
+,   char const* function
+,   int         counter
+,   int         countBackward
+)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -649,7 +689,13 @@ XCOVER_CALL(xcover_rc_t) xcover_markFileEnd(char const* fileName, int line, char
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_markLine(char const* fileName, int line, char const* function, int counter)
+XCOVER_CALL(xcover_rc_t)
+xcover_markLine(
+    char const* fileName
+,   int         line
+,   char const* function
+,   int         counter
+)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -671,7 +717,12 @@ XCOVER_CALL(xcover_rc_t) xcover_markLine(char const* fileName, int line, char co
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_startGroupCoverage(char const* fileName, int line, char const* groupName)
+XCOVER_CALL(xcover_rc_t)
+xcover_startGroupCoverage(
+    char const* fileName
+,   int         line
+,   char const* groupName
+)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -693,7 +744,12 @@ XCOVER_CALL(xcover_rc_t) xcover_startGroupCoverage(char const* fileName, int lin
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_endGroupCoverage(char const* fileName, int line, char const* groupName)
+XCOVER_CALL(xcover_rc_t)
+xcover_endGroupCoverage(
+    char const* fileName
+,   int         line
+,   char const* groupName
+)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -715,7 +771,13 @@ XCOVER_CALL(xcover_rc_t) xcover_endGroupCoverage(char const* fileName, int line,
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_reportGroupCoverage(char const* fileName, int line, char const* groupName, xcover_reporter_t* reporter)
+XCOVER_CALL(xcover_rc_t)
+xcover_reportGroupCoverage(
+    char const*         fileName
+,   int                 line
+,   char const*         groupName
+,   xcover_reporter_t*  reporter
+)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -737,7 +799,11 @@ XCOVER_CALL(xcover_rc_t) xcover_reportGroupCoverage(char const* fileName, int li
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_reportFileCoverage(char const* fileName, xcover_reporter_t* reporter)
+XCOVER_CALL(xcover_rc_t)
+xcover_reportFileCoverage(
+    char const*         fileName
+,   xcover_reporter_t*  reporter
+)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -759,7 +825,11 @@ XCOVER_CALL(xcover_rc_t) xcover_reportFileCoverage(char const* fileName, xcover_
     }
 }
 
-XCOVER_CALL(xcover_rc_t) xcover_reportAliasCoverage(char const* aliasName, xcover_reporter_t* reporter)
+XCOVER_CALL(xcover_rc_t)
+xcover_reportAliasCoverage(
+    char const*         aliasName
+,   xcover_reporter_t*  reporter
+)
 {
     STLSOFT_MESSAGE_ASSERT("xCover not initialised!", NULL != s_ctxt);
 
@@ -794,7 +864,7 @@ namespace
         , m_groups()
     {}
 
-    xCover_Context_t::~xCover_Context_t() stlsoft_throw_0()
+    xCover_Context_t::~xCover_Context_t() STLSOFT_NOEXCEPT
     {}
 
     void* xCover_Context_t::operator new(size_t /* cb */, void* pv)
@@ -911,7 +981,7 @@ namespace
 
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
 
-        // If no such file exists, then we add it in
+        // If no such file exists, then we add it in ...
 
         files_type_::iterator it_File = m_files.find(fileName);
 
@@ -920,7 +990,7 @@ namespace
             it_File = m_files.insert(std::make_pair(normalise_fileName(fileName), File_ptr_t(new xCover_File_t(fileName)))).first;
         }
 
-        // Now we mark the file's end
+        // ... and mark the file's end
         xCover_File_t& file = *(*it_File).second;
 
         file.markEnd(line, counter, countBackward);
@@ -938,7 +1008,7 @@ namespace
 
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
 
-        // If no such file exists, then we add it in
+        // If no such file exists, then we add it in ...
 
         files_type_::iterator it_File = m_files.find(fileName);
 
