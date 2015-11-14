@@ -50,6 +50,8 @@
 //# define XCOVER_USE_SHWILD
 #endif
 
+//#define XCOVER_COPY_FILE_PATHS
+
 /* /////////////////////////////////////////////////////////////////////////
  * Includes
  */
@@ -102,6 +104,7 @@
 #else
 # include <platformstl/synch/thread_mutex.hpp>
 #endif
+#include <stlsoft/shims/access/string.hpp>
 
 #include <map>
 #include <string>
@@ -136,6 +139,15 @@ namespace
 #else /* ? XCOVER_USE_SIMPLE_STRING_ */
     typedef std::basic_string<char_t>               string_t;
 #endif /* XCOVER_USE_SIMPLE_STRING_ */
+#ifdef XCOVER_COPY_FILE_PATHS
+    typedef string_t                                fileName_t;
+    typedef string_t const&                         fileName_param_t;
+#else
+    typedef char_t const*                           fileName_t;
+    typedef char_t const*                           fileName_param_t;
+#endif
+    typedef string_t                                groupName_t;
+    typedef string_t                                aliasName_t;
     typedef platformstl::filesystem_traits<char_t>  filesystem_traits_t;
 
 #if defined(PLATFORMSTL_OS_IS_WINDOWS) || \
@@ -143,7 +155,7 @@ namespace
     inline
     string_t
     normalise_fileName(
-        string_t const& fileName
+        fileName_param_t fileName
     )
     {
         string_t newFileName(fileName);
@@ -154,14 +166,92 @@ namespace
     }
 #else /* ? OS */
     inline
-    string_t const&
+    fileName_param_t
     normalise_fileName(
-        string_t const& fileName
+        fileName_param_t fileName
     )
     {
         return fileName;
     }
 #endif /* OS */
+
+#ifdef XCOVER_COPY_FILE_PATHS
+
+    static
+    bool
+    paths_equal(
+        fileName_t const&   path1
+    ,   fileName_param_t    path2
+    )
+    {
+        if(path1 == path2)
+        {
+            return true;
+        }
+
+# if defined(PLATFORMSTL_OS_IS_UNIX)
+# elif defined(PLATFORMSTL_OS_IS_WINDOWS)
+        if(0 == filesystem_traits_t::str_compare_no_case(stlsoft::c_str_ptr(path1), stlsoft::c_str_ptr(path2)))
+        {
+            return true;
+        }
+# else /* ? OS */
+#  error
+# endif /* OS */
+
+        return false;
+    }
+#else
+
+    static
+    bool
+    paths_equal(
+        string_t const&     path1
+    ,   fileName_param_t    path2
+    )
+    {
+        if(path1 == path2)
+        {
+            return true;
+        }
+
+# if defined(PLATFORMSTL_OS_IS_UNIX)
+# elif defined(PLATFORMSTL_OS_IS_WINDOWS)
+        if(0 == filesystem_traits_t::str_compare_no_case(stlsoft::c_str_ptr(path1), stlsoft::c_str_ptr(path2)))
+        {
+            return true;
+        }
+# else /* ? OS */
+#  error
+# endif /* OS */
+
+        return false;
+    }
+#endif
+
+#ifndef XCOVER_USE_SHWILD
+    static
+    bool
+    paths_match(
+        char_t const*   pattern
+    ,   char_t const*   path
+    )
+    {
+# if defined(XCOVER_USE_FNMATCH_)
+        if(0 == ::fnmatch(pattern, path, FNM_PATHNAME))
+# elif defined(XCOVER_USE_PATHMATCH_)
+        if(::PathMatchSpecA(path, pattern))
+# else /* ? OS */
+#  error Platform not discriminated
+# endif /* OS */
+        {
+            return true;
+        }
+
+        return false;
+    }
+#endif /* !XCOVER_USE_SHWILD */
+
 
     static
     bool
@@ -172,7 +262,6 @@ namespace
     {
         return string_t::npos != s.find(ch);
     }
-
 
 
 
@@ -210,13 +299,13 @@ namespace
         typedef std::vector<xCover_Mark_t>  marks_type;
 
     public: /// Member Variables
-        string_t                name;   // Original name of file (not \ => / normalised
+        fileName_t const        name;   // Original name of file (not \ => / normalised
         marks_type              marks;  // Stored contiguously by counter, not by line!
         xCover_LineAndCounter_t start;
         xCover_LineAndCounter_t end;
 
     public: /// Construction
-        explicit xCover_File_t(string_t const& name)
+        explicit xCover_File_t(fileName_param_t name)
             : name(name)
             , marks()
             , start(-1, INT_MIN)
@@ -321,21 +410,36 @@ namespace
                         }
                     }}
 
-                    xcover_coverItem_t  item;
-
-                    item.groupName          =   groupName;
-                    item.fileName           =   name.c_str();
-                    item.markIndex          =   int(i);
-                    item.priorMarkLine      =   priorLine;
-                    item.posteriorMarkLine  =   posteriorLine;
-
-                    reporter->onReportItem(&item);
+                    dispatch_to_reporter(reporter, stlsoft::c_str_ptr(groupName), stlsoft::c_str_ptr(name), int(i), priorLine, posteriorLine);
 
                     ++n;
                 }
             }}
 
             return n;
+        }
+
+    private:
+        static
+        void
+        dispatch_to_reporter(
+            xcover_reporter_t*  reporter
+        ,   char_t const*       groupName
+        ,   char_t const*       fileName
+        ,   int                 markIndex
+        ,   int                 priorLine
+        ,   int                 posteriorLine
+        )
+        {
+            xcover_coverItem_t  item;
+
+            item.groupName          =   groupName;
+            item.fileName           =   fileName;
+            item.markIndex          =   markIndex;
+            item.priorMarkLine      =   priorLine;
+            item.posteriorMarkLine  =   posteriorLine;
+
+            reporter->onReportItem(&item);
         }
     };
 
@@ -374,7 +478,7 @@ namespace
         : public std::binary_function<string_t, string_t, bool>
     {
     public:
-        bool operator()(string_t const& lhs, string_t const& rhs) const
+        bool operator()(fileName_param_t lhs, fileName_param_t rhs) const
         {
             return lhs < rhs;
         }
@@ -392,27 +496,27 @@ namespace
         void operator delete(void*, void* );
 
     public:
-        xcover_rc_t associateFileWithGroup(string_t const& fileName, int line, string_t const& groupName);
+        xcover_rc_t associateFileWithGroup(fileName_param_t fileName, int line, string_t const& groupName);
 
-        xcover_rc_t createFileAlias(string_t const& fileName, int line, string_t const& aliasName);
+        xcover_rc_t createFileAlias(fileName_param_t fileName, int line, aliasName_t const& aliasName);
 
-        xcover_rc_t markFileStart(string_t const& fileName, int line, char const* function, int counter, int countForward);
-        xcover_rc_t markFileEnd(string_t const& fileName, int line, char const* function, int counter, int countBackward);
-        xcover_rc_t markLine(string_t const& fileName, char const* function, int counter, int line);
+        xcover_rc_t markFileStart(fileName_param_t fileName, int line, char const* function, int counter, int countForward);
+        xcover_rc_t markFileEnd(fileName_param_t fileName, int line, char const* function, int counter, int countBackward);
+        xcover_rc_t markLine(fileName_param_t fileName, char const* function, int counter, int line);
 
-        xcover_rc_t startGroupCoverage(string_t const& fileName, int line, string_t const& groupName);
-        xcover_rc_t endGroupCoverage(string_t const& fileName, int line, string_t const& groupName);
+        xcover_rc_t startGroupCoverage(fileName_param_t fileName, int line, string_t const& groupName);
+        xcover_rc_t endGroupCoverage(fileName_param_t fileName, int line, string_t const& groupName);
 
-        xcover_rc_t reportGroupCoverage(string_t const& fileName, int line, string_t const& groupName, xcover_reporter_t* reporter) const;
+        xcover_rc_t reportGroupCoverage(fileName_param_t fileName, int line, string_t const& groupName, xcover_reporter_t* reporter) const;
 
-        xcover_rc_t reportFileCoverage(string_t const& fileName, xcover_reporter_t* reporter) const;
+        xcover_rc_t reportFileCoverage(fileName_param_t fileName, xcover_reporter_t* reporter) const;
 
-        xcover_rc_t reportAliasCoverage(string_t const& aliasName, xcover_reporter_t* reporter) const;
+        xcover_rc_t reportAliasCoverage(aliasName_t const& aliasName, xcover_reporter_t* reporter) const;
 
     private:
-        typedef std::map<string_t, File_ptr_t, file_compare_t>  files_type_;
-        typedef std::map<string_t, string_t>                    aliases_type_;
-        typedef std::map<string_t, xCover_Group_t>              groups_type_;
+        typedef std::map<fileName_t, File_ptr_t, file_compare_t>    files_type_;
+        typedef std::map<aliasName_t, fileName_t>                   aliases_type_;
+        typedef std::map<groupName_t, xCover_Group_t>               groups_type_;
 #if defined(PLATFORMSTL_OS_IS_UNIX) && \
     !defined(UNIXSTL_USING_PTHREADS)
         typedef stlsoft::null_mutex                             mutex_type_;
@@ -876,17 +980,11 @@ namespace
 
     xcover_rc_t
     xCover_Context_t::associateFileWithGroup(
-        string_t const& fileName
-    ,   int             line
-    ,   string_t const& groupName
+        fileName_param_t    fileName
+    ,   int              /* line */
+    ,   string_t const&     groupName
     )
     {
-        // Normalise file name
-        if(string_contains(fileName, '\\'))
-        {
-            return associateFileWithGroup(normalise_fileName(fileName), line, groupName);
-        }
-
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
 
         // If no such file exists, then we add it in
@@ -916,17 +1014,11 @@ namespace
 
     xcover_rc_t
     xCover_Context_t::createFileAlias(
-        string_t const& fileName
-    ,   int             line
-    ,   string_t const& aliasName
+        fileName_param_t    fileName
+    ,   int              /* line */
+    ,   aliasName_t const&   aliasName
     )
     {
-        // Normalise file name
-        if(string_contains(fileName, '\\'))
-        {
-            return createFileAlias(normalise_fileName(fileName), line, aliasName);
-        }
-
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
 
         // If no such file exists, then we add it in
@@ -956,19 +1048,13 @@ namespace
 
     xcover_rc_t
     xCover_Context_t::markFileStart(
-        string_t const& fileName
-    ,   int             line
-    ,   char const*     function
-    ,   int             counter
-    ,   int             countForward
+        fileName_param_t    fileName
+    ,   int                 line
+    ,   char const*      /* function */
+    ,   int                 counter
+    ,   int                 countForward
     )
     {
-        // Normalise file name
-        if(string_contains(fileName, '\\'))
-        {
-            return markFileStart(normalise_fileName(fileName), line, function, counter, countForward);
-        }
-
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
 
         // If no such file exists, then we add it in
@@ -990,19 +1076,13 @@ namespace
 
     xcover_rc_t
     xCover_Context_t::markFileEnd(
-        string_t const& fileName
-    ,   int             line
-    ,   char const*     function
-    ,   int             counter
-    ,   int             countBackward
+        fileName_param_t    fileName
+    ,   int                 line
+    ,   char const*      /* function */
+    ,   int                 counter
+    ,   int                 countBackward
     )
     {
-        // Normalise file name
-        if(string_contains(fileName, '\\'))
-        {
-            return markFileEnd(normalise_fileName(fileName), line, function, counter, countBackward);
-        }
-
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
 
         // If no such file exists, then we add it in ...
@@ -1024,18 +1104,12 @@ namespace
 
     xcover_rc_t
     xCover_Context_t::markLine(
-        string_t const& fileName
-    ,   char const*     function
-    ,   int             counter
-    ,   int             line
+        fileName_param_t    fileName
+    ,   char const*      /* function */
+    ,   int                 counter
+    ,   int                 line
     )
     {
-        // Normalise file name
-        if(string_contains(fileName, '\\'))
-        {
-            return markLine(normalise_fileName(fileName), function, counter, line);
-        }
-
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
 
         // If no such file exists, then we add it in ...
@@ -1057,9 +1131,9 @@ namespace
 
     xcover_rc_t
     xCover_Context_t::startGroupCoverage(
-        string_t const& /* fileName */
-    ,   int             /* line */
-    ,   string_t const& groupName
+        fileName_param_t /* fileName */
+    ,   int              /* line */
+    ,   string_t const&     groupName
     )
     {
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
@@ -1081,9 +1155,9 @@ namespace
 
     xcover_rc_t
     xCover_Context_t::endGroupCoverage(
-        string_t const& /* fileName */
-    ,   int             /* line */
-    ,   string_t const& groupName
+        fileName_param_t /* fileName */
+    ,   int              /* line */
+    ,   string_t const&     groupName
     )
     {
         stlsoft::lock_scope<mutex_type_>    lock(m_mutex);
@@ -1105,7 +1179,7 @@ namespace
 
     xcover_rc_t
     xCover_Context_t::reportGroupCoverage(
-        string_t const&  /* fileName */
+        fileName_param_t /* fileName */
     ,   int              /* line */
     ,   string_t const&     groupName
     ,   xcover_reporter_t*  reporter
@@ -1142,18 +1216,38 @@ namespace
         }
     }
 
+
+    void
+    do_report(
+        xcover_reporter_t*      reporter
+    ,   xCover_File_t const&    file
+    ,   char_t const*           fileName
+    ,   char_t const*           aliasName
+    )
+    {
+        reporter->onBeginFileReport(fileName, aliasName);
+
+        unsigned n = file.report(fileName, reporter);
+
+        reporter->onEndFileReport(fileName, aliasName, n);
+    }
+
+    void
+    do_report(
+        xcover_reporter_t*      reporter
+    ,   xCover_File_t const&    file
+    ,   char_t const*           aliasName
+    )
+    {
+        do_report(reporter, file, stlsoft::c_str_ptr(file.name), aliasName);
+    }
+
     xcover_rc_t
     xCover_Context_t::reportFileCoverage(
-        string_t const&     fileName
+        fileName_param_t    fileName
     ,   xcover_reporter_t*  reporter
     ) const
     {
-        // Normalise file name
-        if(string_contains(fileName, '\\'))
-        {
-            return reportFileCoverage(normalise_fileName(fileName), reporter);
-        }
-
         stlsoft::lock_scope<mutex_type_>    lock(const_cast<mutex_type_&>(m_mutex));
 
         // Check the reporter
@@ -1209,12 +1303,7 @@ namespace
                         }
                     }
 
-# if defined(PLATFORMSTL_OS_IS_UNIX)
-                    if(0 == filesystem_traits_t::str_compare(fileName.c_str(), item.c_str()))
-# elif defined(PLATFORMSTL_OS_IS_WINDOWS)
-                    if(0 == filesystem_traits_t::str_compare_no_case(fileName.c_str(), item.c_str()))
-# else /* ? OS */
-# endif /* OS */
+                    if(paths_equal(item, fileName))
                     {
                         it_File = it;
                         break;
@@ -1228,11 +1317,11 @@ namespace
 #ifdef XCOVER_USE_SHWILD
             // 4. shwild: if fileName has any wildcards / ranges, use shwild to match
 
-            shwild::Pattern pattern(fileName.c_str());
+            shwild::Pattern pattern(stlsoft::c_str_ptr(fileName));
 
             { for(files_type_::const_iterator it = m_files.begin(); it != m_files.end(); ++it)
             {
-                if(pattern.match((*it).first.c_str()))
+                if(pattern.match(stlsoft::c_str_ptr((*it).first)))
                 {
                     iterators.push_back(it);
                 }
@@ -1241,13 +1330,7 @@ namespace
 #else /* ? XCOVER_USE_SHWILD */
             { for(files_type_::const_iterator it = m_files.begin(); it != m_files.end(); ++it)
             {
-# if defined(XCOVER_USE_FNMATCH_)
-                if(0 == ::fnmatch(fileName.c_str(), (*it).first.c_str(), FNM_PATHNAME))
-# elif defined(XCOVER_USE_PATHMATCH_)
-                if(::PathMatchSpecA((*it).first.c_str(), fileName.c_str()))
-# else /* ? OS */
-#  error Platform not discriminated
-# endif /* OS */
+                if(paths_match(stlsoft::c_str_ptr(fileName), stlsoft::c_str_ptr((*it).first)))
                 {
                     iterators.push_back(it);
                 }
@@ -1267,13 +1350,7 @@ namespace
         {
             { for(size_t i = 0; i != iterators.size(); ++i)
             {
-                string_t const& filePath = (*iterators[i]).second->name;
-
-                reporter->onBeginFileReport(filePath.c_str(), NULL);
-
-                unsigned n = (*iterators[i]).second->report(filePath.c_str(), reporter);
-
-                reporter->onEndFileReport(filePath.c_str(), NULL, n);
+                do_report(reporter, *(*iterators[i]).second, NULL);
             }}
 
             return XCOVER_RC_SUCCESS;
@@ -1282,7 +1359,7 @@ namespace
 
     xcover_rc_t
     xCover_Context_t::reportAliasCoverage(
-        string_t const&     aliasName
+        aliasName_t const&  aliasName
     ,   xcover_reporter_t*  reporter
     ) const
     {
@@ -1302,7 +1379,7 @@ namespace
         }
         else
         {
-            string_t const& fileName = (*it_Alias).second;
+            fileName_t const& fileName = (*it_Alias).second;
 
             files_type_::const_iterator it_File = m_files.find(fileName);
 
@@ -1312,13 +1389,7 @@ namespace
             }
             else
             {
-                string_t const& filePath = (*it_File).second->name;
-
-                reporter->onBeginFileReport(filePath.c_str(), aliasName.c_str());
-
-                unsigned n = (*it_File).second->report(filePath.c_str(), reporter);
-
-                reporter->onEndFileReport(filePath.c_str(), aliasName.c_str(), n);
+                do_report(reporter, *(*it_File).second, stlsoft::c_str_ptr_null(aliasName));
 
                 return XCOVER_RC_SUCCESS;
             }

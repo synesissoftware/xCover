@@ -73,10 +73,10 @@
  */
 
 #define XCOVER_VER_MAJOR        0
-#define XCOVER_VER_MINOR        3
-#define XCOVER_VER_REVISION     6
+#define XCOVER_VER_MINOR        4
+#define XCOVER_VER_REVISION     1
 
-#define XCOVER_VER              0x000306ff
+#define XCOVER_VER              0x000401ff
 
 /* /////////////////////////////////////////////////////////////////////////
  * includes - 1
@@ -542,7 +542,21 @@ xcover_reportAliasCoverage(
 #  define XCOVER_PASTE_(x, y)           XCOVER_PASTE__(x, y)
 #  define XCOVER_DEFINE_FILE_STARTER()              namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzMarker) XCOVER_PASTE_(xcover_file_starter_, __COUNTER__)(XCOVER_NS_QUAL(::xcover, xcover_markFileStart), __FILE__, __LINE__, __COUNTER__, +1); } 
 #  define XCOVER_DEFINE_FILE_ENDER()                namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzMarker) XCOVER_PASTE_(xcover_file_ender_, XCOVER_YIELD_SYMBOL_(__COUNTER__))(XCOVER_NS_QUAL(::xcover, xcover_markFileEnd), __FILE__, __LINE__, __COUNTER__, +1); }
+#  define XCOVER_FILE_ALIAS_ASSOCIATOR(aliasName)   namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzFileAliasAssociator) XCOVER_PASTE_(xcover_file_alias_associator_, XCOVER_YIELD_SYMBOL_(__COUNTER__))(__FILE__, __LINE__, aliasName); }
 #  define XCOVER_FILE_GROUP_ASSOCIATOR(groupName)   namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzFileGroupAssociator) XCOVER_PASTE_(xcover_file_group_associator_, XCOVER_YIELD_SYMBOL_(__COUNTER__))(__FILE__, __LINE__, groupName); }
+
+class xcover_SchwarzFileAliasAssociator
+{
+public:
+    xcover_SchwarzFileAliasAssociator(
+        char const* fileName
+    ,   int         line
+    ,   char const* aliasName
+    )
+    {
+        XCOVER_NS_QUAL(::xcover, xcover_createFileAlias)(fileName, line, aliasName);
+    }
+};
 
 class xcover_SchwarzFileGroupAssociator
 {

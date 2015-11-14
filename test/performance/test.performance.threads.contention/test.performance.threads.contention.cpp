@@ -17,6 +17,7 @@ const int NUM_THREADS   =   20;
 const int NUM_REPEATS   =   1000000/*0*/;
 #endif
 
+XCOVER_FILE_ALIAS_ASSOCIATOR("test.performance.threads.component");
 XCOVER_DEFINE_FILE_STARTER();
 
 static
@@ -76,7 +77,7 @@ int main(int argc, char* argv[])
 
         fprintf(stdout, "completed in %lums\n", static_cast<unsigned long>(counter.get_milliseconds()));
 
-        XCOVER_REPORT_THIS_FILE_COVERAGE(nullptr);
+        XCOVER_REPORT_ALIAS_COVERAGE("test.performance.threads.component", NULL);
 
         return EXIT_SUCCESS;
     }
