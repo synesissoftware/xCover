@@ -5,7 +5,7 @@
  *              library.
  *
  * Created:     1st March 2008
- * Updated:     14th November 2015
+ * Updated:     15th November 2015
  *
  * Home:        http://xcover.org/
  *
@@ -51,6 +51,8 @@
 #endif
 
 //#define XCOVER_COPY_FILE_PATHS
+
+//#define XCOVER_USE_SPIN_LOCKS_
 
 /* /////////////////////////////////////////////////////////////////////////
  * Includes
@@ -101,6 +103,8 @@
 #if defined(PLATFORMSTL_OS_IS_UNIX) && \
     !defined(UNIXSTL_USING_PTHREADS)
 # include <stlsoft/synch/null_mutex.hpp>
+#elif defined(XCOVER_USE_SPIN_LOCKS_)
+# include <platformstl/synch/spin_mutex.hpp>
 #else
 # include <platformstl/synch/thread_mutex.hpp>
 #endif
@@ -162,6 +166,14 @@ namespace
     typedef string_t                                groupName_t;
     typedef string_t                                aliasName_t;
     typedef platformstl::filesystem_traits<char_t>  filesystem_traits_t;
+#if defined(PLATFORMSTL_OS_IS_UNIX) && \
+    !defined(UNIXSTL_USING_PTHREADS)
+    typedef stlsoft::null_mutex                     mutex_t;
+#elif defined(XCOVER_USE_SPIN_LOCKS_)
+    typedef platformstl::spin_mutex                 mutex_t;
+#else
+    typedef platformstl::thread_mutex               mutex_t;
+#endif
 
 #if defined(PLATFORMSTL_OS_IS_WINDOWS) || \
     defined(_WIN32)
@@ -530,12 +542,7 @@ namespace
         typedef std::map<fileName_t, File_ptr_t, file_compare_t>    files_type_;
         typedef std::map<aliasName_t, fileName_t>                   aliases_type_;
         typedef std::map<groupName_t, xCover_Group_t>               groups_type_;
-#if defined(PLATFORMSTL_OS_IS_UNIX) && \
-    !defined(UNIXSTL_USING_PTHREADS)
-        typedef stlsoft::null_mutex                             mutex_type_;
-#else
-        typedef platformstl::thread_mutex                       mutex_type_;
-#endif
+        typedef mutex_t                                             mutex_type_;
 
         mutex_type_     m_mutex;
         files_type_     m_files;

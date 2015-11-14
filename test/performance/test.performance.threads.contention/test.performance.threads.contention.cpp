@@ -9,6 +9,14 @@
 
 #include <stdlib.h>
 
+#if 1
+# define LOOP_MARK()        XCOVER_MARK_LINE()
+#else
+inline int get_0_() { return 0; }
+# define LOOP_MARK()        do { get_0_(); } while(get_0_())
+#endif
+
+
 #if _DEBUG
 const int NUM_THREADS   =   1;
 const int NUM_REPEATS   =   100;
@@ -21,24 +29,34 @@ XCOVER_FILE_ALIAS_ASSOCIATOR("test.performance.threads.component");
 XCOVER_DEFINE_FILE_STARTER();
 
 static
-void
+int
 fn(
     int n
 )
 {
+    int r = ::rand();
+
     XCOVER_MARK_LINE();
 
     for(int i = 0; i != NUM_REPEATS; ++i)
     {
-        XCOVER_MARK_LINE();
+        LOOP_MARK();
         if (0 == ::GetTickCount())
         {
-            XCOVER_MARK_LINE();
+            LOOP_MARK();
+            ++r;
         }
-        XCOVER_MARK_LINE();
+        else
+        {
+            LOOP_MARK();
+            --r;
+        }
+        LOOP_MARK();
     }
 
     XCOVER_MARK_LINE();
+
+    return r;
 }
 
 XCOVER_DEFINE_FILE_ENDER();
@@ -60,6 +78,8 @@ int main(int argc, char* argv[])
 
         std::list<std::thread>              threads;
         platformstl::performance_counter    counter;
+
+        ::srand(102030407);
 
         counter.start();
 

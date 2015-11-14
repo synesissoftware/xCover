@@ -4,7 +4,7 @@
  * Purpose:     Main header file for xCover, a C/C++ code coverage library.
  *
  * Created:     1st March 2008
- * Updated:     14th November 2015
+ * Updated:     15th November 2015
  *
  * Home:        http://xcover.org/
  *
@@ -50,8 +50,8 @@
 #ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
 # define XCOVER_VER_XCOVER_H_XCOVER_MAJOR       1
 # define XCOVER_VER_XCOVER_H_XCOVER_MINOR       6
-# define XCOVER_VER_XCOVER_H_XCOVER_REVISION    6
-# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        29
+# define XCOVER_VER_XCOVER_H_XCOVER_REVISION    7
+# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        30
 #endif /* !XCOVER_DOCUMENTATION_SKIP_SECTION */
 
 /* /////////////////////////////////////////////////////////////////////////
