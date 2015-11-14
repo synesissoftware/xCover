@@ -1,0 +1,8 @@
+# Created:  25th September 2015
+# Updated:  25th September 2015
+#
+# format:
+#
+#  <project-name> <location> <source-spec-1> [ ... <source-spec-N> ]
+shwild	$(SHWILD_ROOT)	include/shwild|*.h,*.hpp||R	src|*.c,*.cpp,*.h,*.hpp|src/shwild
+xTests	$(XTESTS_C_ROOT)	include/xtests|||R	src||src/xtests
