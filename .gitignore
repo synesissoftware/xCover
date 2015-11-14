@@ -30,9 +30,18 @@ Release Multithreaded DLL/
 x64/
 Win32/
 
+build/ar/
+build/icl8.win32/
+build/icl9.win32/
+build/icl10.win32/
+build/icl11.win32/
+
 # directories (by pattern)
 
 # files (by name)
+
+build/makefile.tmpl
+build/makefile.tools.xml
 
 # files (by pattern)
 
@@ -56,5 +65,7 @@ Win32/
 *.sdf
 *.so
 *.suo
+*.swp
 *.vcproj.user
 *.vcxproj.user
+
