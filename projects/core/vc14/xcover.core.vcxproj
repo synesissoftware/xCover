@@ -271,7 +271,7 @@ copy /B /V /Y "$(TargetPath)" "$(ProjectDir)..\..\..\lib"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include;$(SHWILD_ROOT)/include;</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -296,7 +296,7 @@ copy /B /V /Y "$(TargetPath)" "$(ProjectDir)..\..\..\lib"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include;$(SHWILD_ROOT)/include;</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -321,7 +321,7 @@ copy /B /V /Y "$(TargetPath)" "$(ProjectDir)..\..\..\lib"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include;$(SHWILD_ROOT)/include;</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -346,7 +346,7 @@ copy /B /V /Y "$(TargetPath)" "$(ProjectDir)..\..\..\lib"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include;$(SHWILD_ROOT)/include;</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -364,22 +364,22 @@ copy /B /V /Y "$(TargetPath)" "$(ProjectDir)..\..\..\lib"</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Multithreaded|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include;$(SHWILD_ROOT)/include;</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Multithreaded|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include;$(SHWILD_ROOT)/include;</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Multithreaded DLL|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include;$(SHWILD_ROOT)/include;</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Multithreaded DLL|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../include;$(STLSOFT)/include;$(SHWILD_ROOT)/include;</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Multithreaded|Win32'">
