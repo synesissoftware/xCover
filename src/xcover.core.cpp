@@ -132,6 +132,19 @@ namespace xcover
 
 namespace
 {
+    // Data types:
+    //
+    // - xCover_LineAndCounter_t    -   tuple of line + counter
+    // - xCover_Mark_t              -   tuple of line + count
+    // - xCover_File_t              -   filename, vector of marks (indexed by counter), start, end
+    // - xCover_Group_t             -   name, collection of files
+    // - xConvert_context_t         -   mutex, files, aliases, groups
+    //
+    // Locking:
+    //
+    // - context -> mutex
+
+
     // String type used by the implementation
     typedef char                                    char_t;
 #ifdef XCOVER_USE_SIMPLE_STRING_
