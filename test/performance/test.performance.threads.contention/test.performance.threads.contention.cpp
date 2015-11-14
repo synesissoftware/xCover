@@ -10,11 +10,11 @@
 #include <stdlib.h>
 
 #if _DEBUG
-const int NUM_THREADS	=	1;
-const int NUM_REPEATS	=	100;
+const int NUM_THREADS   =   1;
+const int NUM_REPEATS   =   100;
 #else
-const int NUM_THREADS	=	20;
-const int NUM_REPEATS	=	1000000/*0*/;
+const int NUM_THREADS   =   20;
+const int NUM_REPEATS   =   1000000/*0*/;
 #endif
 
 XCOVER_DEFINE_FILE_STARTER();
