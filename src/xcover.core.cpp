@@ -890,7 +890,7 @@ namespace
 
         if(it_File == m_files.end())
         {
-            it_File = m_files.insert(std::make_pair(normalise_fileName(fileName), File_ptr_t(new xCover_File_t(fileName)))).first;
+            it_File = m_files.insert(std::make_pair(fileName, File_ptr_t(new xCover_File_t(fileName)))).first;
         }
 
         // If no such group exists, then we add it in
@@ -925,7 +925,7 @@ namespace
 
         if(it_File == m_files.end())
         {
-            it_File = m_files.insert(std::make_pair(normalise_fileName(fileName), File_ptr_t(new xCover_File_t(fileName)))).first;
+            it_File = m_files.insert(std::make_pair(fileName, File_ptr_t(new xCover_File_t(fileName)))).first;
         }
 
         // If the alias exists, then we fail
@@ -960,7 +960,7 @@ namespace
 
         if(it_File == m_files.end())
         {
-            it_File = m_files.insert(std::make_pair(normalise_fileName(fileName), File_ptr_t(new xCover_File_t(fileName)))).first;
+            it_File = m_files.insert(std::make_pair(fileName, File_ptr_t(new xCover_File_t(fileName)))).first;
         }
 
         // Now we mark the file's start
@@ -987,7 +987,7 @@ namespace
 
         if(it_File == m_files.end())
         {
-            it_File = m_files.insert(std::make_pair(normalise_fileName(fileName), File_ptr_t(new xCover_File_t(fileName)))).first;
+            it_File = m_files.insert(std::make_pair(fileName, File_ptr_t(new xCover_File_t(fileName)))).first;
         }
 
         // ... and mark the file's end
@@ -1014,7 +1014,7 @@ namespace
 
         if(it_File == m_files.end())
         {
-            it_File = m_files.insert(std::make_pair(normalise_fileName(fileName), File_ptr_t(new xCover_File_t(fileName)))).first;
+            it_File = m_files.insert(std::make_pair(fileName, File_ptr_t(new xCover_File_t(fileName)))).first;
 
             /// ... and mark this as the start
             (*it_File).second->markStart(line, counter, 0);

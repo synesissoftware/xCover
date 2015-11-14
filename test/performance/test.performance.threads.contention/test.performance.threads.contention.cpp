@@ -17,7 +17,7 @@ const int NUM_THREADS	=	20;
 const int NUM_REPEATS	=	1000000/*0*/;
 #endif
 
-
+XCOVER_DEFINE_FILE_STARTER();
 
 static
 void
@@ -40,6 +40,7 @@ fn(
     XCOVER_MARK_LINE();
 }
 
+XCOVER_DEFINE_FILE_ENDER();
 
 
 int main(int argc, char* argv[])
