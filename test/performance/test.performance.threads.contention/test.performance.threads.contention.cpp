@@ -97,7 +97,11 @@ int main(int argc, char* argv[])
 
         fprintf(stdout, "completed in %lums\n", static_cast<unsigned long>(counter.get_milliseconds()));
 
+#if XCOVER_VER >= 0x00040000
         XCOVER_REPORT_ALIAS_COVERAGE("test.performance.threads.component", NULL);
+#else
+        XCOVER_REPORT_THIS_FILE_COVERAGE(NULL);
+#endif
 
         return EXIT_SUCCESS;
     }

@@ -50,8 +50,8 @@
 #ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
 # define XCOVER_VER_XCOVER_H_XCOVER_MAJOR       1
 # define XCOVER_VER_XCOVER_H_XCOVER_MINOR       6
-# define XCOVER_VER_XCOVER_H_XCOVER_REVISION    7
-# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        30
+# define XCOVER_VER_XCOVER_H_XCOVER_REVISION    8
+# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        31
 #endif /* !XCOVER_DOCUMENTATION_SKIP_SECTION */
 
 /* /////////////////////////////////////////////////////////////////////////
@@ -74,9 +74,9 @@
 
 #define XCOVER_VER_MAJOR        0
 #define XCOVER_VER_MINOR        4
-#define XCOVER_VER_REVISION     1
+#define XCOVER_VER_REVISION     2
 
-#define XCOVER_VER              0x000401ff
+#define XCOVER_VER              0x000402ff
 
 /* /////////////////////////////////////////////////////////////////////////
  * includes - 1
