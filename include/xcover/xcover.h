@@ -50,8 +50,8 @@
 #ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
 # define XCOVER_VER_XCOVER_H_XCOVER_MAJOR       1
 # define XCOVER_VER_XCOVER_H_XCOVER_MINOR       6
-# define XCOVER_VER_XCOVER_H_XCOVER_REVISION    8
-# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        31
+# define XCOVER_VER_XCOVER_H_XCOVER_REVISION    9
+# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        32
 #endif /* !XCOVER_DOCUMENTATION_SKIP_SECTION */
 
 /* /////////////////////////////////////////////////////////////////////////
@@ -74,9 +74,9 @@
 
 #define XCOVER_VER_MAJOR        0
 #define XCOVER_VER_MINOR        4
-#define XCOVER_VER_REVISION     2
+#define XCOVER_VER_REVISION     3
 
-#define XCOVER_VER              0x000402ff
+#define XCOVER_VER              0x000403ff
 
 /* /////////////////////////////////////////////////////////////////////////
  * includes - 1
@@ -93,8 +93,8 @@
 #if defined(STLSOFT_VER) && \
     STLSOFT_VER >= 0x010c0000
 # define XCOVER_STLSOFT_1_12_OR_LATER
-#elif _STLSOFT_VER < 0x01097bff
-# error xCover requires version 1.9.123 (or later) of STLSoft; download from www.stlsoft.org
+#elif _STLSOFT_VER < 0x01097cff
+# error xCover requires version 1.9.124 (or later) of STLSoft; download from www.stlsoft.org
 #endif /* _STLSOFT_VER */
 
 #if defined(STLSOFT_CF_FUNCTION_SYMBOL_SUPPORT)
@@ -185,7 +185,7 @@ namespace xcover
  * \note This line must be executed at least once for the start of the file
  *   to be marked
  */
-#define XCOVER_MARK_FILE_START()                            XCOVER_NS_QUAL(::xcover, xcover_markFileStart)(__FILE__, __LINE__, __FUNCTION__, __COUNTER__, 0)
+#define XCOVER_MARK_FILE_START()                            XCOVER_NS_QUAL(::xcover, xcover_markFileStart)(__FILE__, __LINE__, STLSOFT_FUNCTION_SYMBOL, __COUNTER__, 0)
 
 /** \def XCOVER_MARK_FILE_END()
  *
@@ -196,13 +196,13 @@ namespace xcover
  * \note This line must be executed at least once for the end of the file
  *   to be marked
  */
-#define XCOVER_MARK_FILE_END()                              XCOVER_NS_QUAL(::xcover, xcover_markFileEnd)(__FILE__, __LINE__, __FUNCTION__, __COUNTER__, 0)
+#define XCOVER_MARK_FILE_END()                              XCOVER_NS_QUAL(::xcover, xcover_markFileEnd)(__FILE__, __LINE__, STLSOFT_FUNCTION_SYMBOL, __COUNTER__, 0)
 
 /** \def XCOVER_MARK_LINE()
  *
  * Used to mark a line.
  */
-#define XCOVER_MARK_LINE()                                  XCOVER_NS_QUAL(::xcover, xcover_markLine)(__FILE__, __LINE__, __FUNCTION__, __COUNTER__)
+#define XCOVER_MARK_LINE()                                  XCOVER_NS_QUAL(::xcover, xcover_markLine)(__FILE__, __LINE__, STLSOFT_FUNCTION_SYMBOL, __COUNTER__)
 
 /** \def XCOVER_CREATE_FILE_ALIAS(aliasName)
  *
@@ -576,7 +576,7 @@ class xcover_SchwarzMarker
 public:
     xcover_SchwarzMarker(xcover_rc_t (XCOVER_CALLCONV* pfn)(char const*, int, char const*, int, int), char const* fileName, int line, int counter, int countExtra)
     {
-        (*pfn)(fileName, line, __FUNCTION__, counter, countExtra);
+        (*pfn)(fileName, line, STLSOFT_FUNCTION_SYMBOL, counter, countExtra);
     }
 };
 

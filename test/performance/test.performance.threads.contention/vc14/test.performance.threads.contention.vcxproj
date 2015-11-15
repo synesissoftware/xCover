@@ -299,6 +299,10 @@
     <ClCompile Include="..\implicit_link.cpp" />
     <ClCompile Include="..\test.performance.threads.contention.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\xcover\implicit_link.h" />
+    <ClInclude Include="..\..\..\..\include\xcover\xcover.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
