@@ -321,6 +321,7 @@ namespace
     struct xCover_File_t
     {
     public: /// Member Types
+        typedef xCover_File_t               class_type;
         typedef std::vector<xCover_Mark_t>  marks_type;
 
     public: /// Member Variables
@@ -336,6 +337,9 @@ namespace
             , start(-1, INT_MIN)
             , end(-1, INT_MAX)
         {}
+    private:
+        xCover_File_t(class_type const&);
+        class_type& operator =(class_type const&);
 
     public: /// Operations
         void markStart(int line, int counter, int countForward)
