@@ -4,7 +4,7 @@
  * Purpose:     Main header file for xCover, a C/C++ code coverage library.
  *
  * Created:     1st March 2008
- * Updated:     15th November 2015
+ * Updated:     24th December 2015
  *
  * Home:        http://xcover.org/
  *
@@ -50,8 +50,8 @@
 #ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
 # define XCOVER_VER_XCOVER_H_XCOVER_MAJOR       1
 # define XCOVER_VER_XCOVER_H_XCOVER_MINOR       6
-# define XCOVER_VER_XCOVER_H_XCOVER_REVISION    9
-# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        32
+# define XCOVER_VER_XCOVER_H_XCOVER_REVISION    10
+# define XCOVER_VER_XCOVER_H_XCOVER_EDIT        33
 #endif /* !XCOVER_DOCUMENTATION_SKIP_SECTION */
 
 /* /////////////////////////////////////////////////////////////////////////
@@ -74,9 +74,9 @@
 
 #define XCOVER_VER_MAJOR        0
 #define XCOVER_VER_MINOR        4
-#define XCOVER_VER_REVISION     3
+#define XCOVER_VER_REVISION     4
 
-#define XCOVER_VER              0x000403ff
+#define XCOVER_VER              0x000404ff
 
 /* /////////////////////////////////////////////////////////////////////////
  * includes - 1
@@ -504,7 +504,7 @@ xcover_reportGroupCoverage(
 ,   xcover_reporter_t*  reporter
 );
 
-/** Reports coverage for a files
+/** Reports coverage for one or more files
  *
  * \param fileName The file name. May be a file name only, a file name + extension, a full path name, or a shell wild-card path
  * \param reporter A pointer to a \link xcover_reporter_t reporter\endlink instance. May be NULL
@@ -538,8 +538,8 @@ xcover_reportAliasCoverage(
 
 # ifndef XCOVER_DOCUMENTATION_SKIP_SECTION
 #  define XCOVER_YIELD_SYMBOL_(x)       x 
-#  define XCOVER_PASTE__(x, y)          x ## y
-#  define XCOVER_PASTE_(x, y)           XCOVER_PASTE__(x, y)
+#  define XCOVER_PASTE_indirect_(x, y)  x ## y
+#  define XCOVER_PASTE_(x, y)           XCOVER_PASTE_indirect_(x, y)
 #  define XCOVER_DEFINE_FILE_STARTER()              namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzMarker) XCOVER_PASTE_(xcover_file_starter_, __COUNTER__)(XCOVER_NS_QUAL(::xcover, xcover_markFileStart), __FILE__, __LINE__, __COUNTER__, +1); } 
 #  define XCOVER_DEFINE_FILE_ENDER()                namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzMarker) XCOVER_PASTE_(xcover_file_ender_, XCOVER_YIELD_SYMBOL_(__COUNTER__))(XCOVER_NS_QUAL(::xcover, xcover_markFileEnd), __FILE__, __LINE__, __COUNTER__, +1); }
 #  define XCOVER_FILE_ALIAS_ASSOCIATOR(aliasName)   namespace { static XCOVER_NS_QUAL(::xcover, xcover_SchwarzFileAliasAssociator) XCOVER_PASTE_(xcover_file_alias_associator_, XCOVER_YIELD_SYMBOL_(__COUNTER__))(__FILE__, __LINE__, aliasName); }
@@ -574,7 +574,13 @@ public:
 class xcover_SchwarzMarker
 {
 public:
-    xcover_SchwarzMarker(xcover_rc_t (XCOVER_CALLCONV* pfn)(char const*, int, char const*, int, int), char const* fileName, int line, int counter, int countExtra)
+    xcover_SchwarzMarker(
+        xcover_rc_t   (XCOVER_CALLCONV *pfn)(char const*, int, char const*, int, int)
+    ,   char const*                     fileName
+    ,   int                             line
+    ,   int                             counter
+    ,   int                             countExtra
+    )
     {
         (*pfn)(fileName, line, STLSOFT_FUNCTION_SYMBOL, counter, countExtra);
     }
@@ -582,9 +588,6 @@ public:
 
 # endif /* !XCOVER_DOCUMENTATION_SKIP_SECTION */
 
-
-# if !defined(XCOVER_NO_AUTO_INIT) || \
-     defined(XCOVER_FORCE_AUTO_INIT)
 
 /** Schwarz Counter class used to automatically initialise the library
  */
@@ -606,9 +609,12 @@ public: /* Construction */
         xcover_uninit();
     }
 private:
-    xcover_initialiser(class_type const&);      // proscribed
-    class_type& operator =(class_type const&);  // proscribed
+    xcover_initialiser(class_type const&);      // copy-construction proscribed
+    class_type& operator =(class_type const&);  // copy-assignment proscribed
 };
+
+# if !defined(XCOVER_NO_AUTO_INIT) || \
+     defined(XCOVER_FORCE_AUTO_INIT)
 
 namespace
 {
@@ -616,7 +622,7 @@ namespace
 
 } /* anonymous namespace */
 
-#endif /* !XCOVER_NO_AUTO_INIT || XCOVER_FORCE_AUTO_INIT */
+# endif /* !XCOVER_NO_AUTO_INIT || XCOVER_FORCE_AUTO_INIT */
 #endif /* __cplusplus */
 
 /* /////////////////////////////////////////////////////////////////////////
